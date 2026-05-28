@@ -19,3 +19,4 @@ Run:
 
 ```powershell
 pwsh ./scripts/upload-to-adls.ps1 -Source ./data/my-local-file.csv -Dest my-local-file.csv
+```
