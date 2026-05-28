@@ -35,3 +35,8 @@ pre-commit install
 Copy the `env.example` file into `.env` file. Fill in the environment variables.
 
 </details>
+
+## Use Cases
+
+# IMF
+Data Source : [IMF Data](https://data.imf.org/en/datasets/IMF.RES:WEO)
