@@ -8,7 +8,7 @@ import pandas as pd
 import requests
 import streamlit as st
 
-from frontend.config import settings
+from config import settings
 
 # ── Config ─────────────────────────────────────────────────────────────────────
 

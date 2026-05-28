@@ -51,10 +51,14 @@ Copy the `env.example` file into `.env` file. Fill in the environment variables.
 | `make run-frontend` | Start the Streamlit chat UI on `http://localhost:8501` |
 | `make run` | Start both backend and frontend simultaneously |
 | `make download_imf_data` | Download IMF GDP growth data to `data/imf/` |
+| `make docker-build` | Build both Docker images locally |
+| `make docker-run` | Build and start both containers via Docker Compose |
+| `make docker-down` | Stop and remove containers |
+| `make deploy-azure` | Build images locally, push to ACR, deploy to Azure Container Apps (`switzerlandnorth`) |
 
 ---
 
-## Running the Agent
+## Running locally (Python)
 
 **Backend only:**
 
@@ -74,12 +78,71 @@ make run-frontend
 make run
 ```
 
-This starts uvicorn in the background and Streamlit in the foreground. Press `Ctrl+C` to stop both.
-
 - Backend API + docs: `http://localhost:8000/docs`
 - Chat UI: `http://localhost:8501`
 
 ---
+
+## Running locally (Docker)
+
+Requires Docker Desktop. Mirrors the Azure topology exactly.
+
+```bash
+make docker-run
+```
+
+This builds both images and starts:
+- Frontend → `http://localhost:8501`
+- Backend → `http://localhost:8000`
+
+The frontend container automatically points to the backend container via Docker's internal network (`http://backend:8000`). Your `.env` file is used for all secrets — it is never baked into the image.
+
+To stop:
+
+```bash
+make docker-down
+```
+
+---
+
+## Deploying to Azure (Container Apps)
+
+Hosted on **Azure Container Apps** in `switzerlandnorth`. The backend runs with internal ingress (not reachable from the internet directly); only the Streamlit frontend is public. Secrets are stored in Container Apps and injected at runtime.
+
+### Prerequisites
+
+```bash
+# One-time setup
+az login
+az extension add --name containerapp --upgrade
+```
+
+### Deploy
+
+Requires Docker Desktop. The script reads secrets directly from your `.env` file — no manual `export` needed. Fully idempotent — safe to run again to redeploy after code changes.
+
+```bash
+make deploy-azure
+```
+
+The script will:
+1. Register required Azure resource providers (one-time, no-op thereafter)
+2. Create a resource group (`edatademo-rg`) in `switzerlandnorth` if not present.
+3. Create an Azure Container Registry if not present, build both images locally, and push them
+4. Create a Container Apps environment
+5. Deploy the **backend** with internal ingress (port 8000)
+6. Deploy the **frontend** with external ingress (port 8501), wired to the backend URL
+7. Print the public demo URL
+
+### Tear down after the demo
+
+```bash
+az group delete --name edatademo-rg --yes --no-wait
+```
+
+---
+
+**Both at once:**
 
 ## API Reference
 

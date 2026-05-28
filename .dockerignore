@@ -1,0 +1,38 @@
+# Files excluded from Docker build context
+
+# Virtual environment
+.venv/
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+
+# Environment secrets — never bake into the image
+.env
+
+# Git
+.git/
+.gitignore
+
+# Pre-commit
+.pre-commit-config.yaml
+
+# Editor / IDE
+.vscode/
+.idea/
+*.iml
+
+# Downloaded data (not needed at runtime — fetched live from APIs / ADLS)
+data/imf/
+
+# Docs
+*.MD
+*.md
+
+# Test artefacts
+.pytest_cache/
+htmlcov/
+.coverage

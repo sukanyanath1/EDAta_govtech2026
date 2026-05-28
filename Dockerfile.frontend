@@ -1,0 +1,21 @@
+FROM python:3.12-slim
+
+WORKDIR /app
+
+RUN pip install --no-cache-dir uv==0.8.14
+
+# ── Dependency layer ──────────────────────────────────────────────────────────
+COPY pyproject.toml .
+RUN uv pip install --system -r pyproject.toml
+
+# ── Application source ────────────────────────────────────────────────────────
+COPY frontend/ ./frontend/
+
+EXPOSE 8501
+
+# headless=true disables the browser-open prompt; address=0.0.0.0 required in containers
+CMD ["streamlit", "run", "frontend/app.py", \
+     "--server.port=8501", \
+     "--server.address=0.0.0.0", \
+     "--server.headless=true", \
+     "--browser.gatherUsageStats=false"]
