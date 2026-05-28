@@ -2,8 +2,8 @@
 
 ## WPP2024_Demographic_Indicators_Medium.csv
 
-Source File: ./demographic/WPP2024_Demographic_Indicators_Medium.csv
-Topic: Demographic Indicators from 1950-2100
+- Source File: ./demographic/WPP2024_Demographic_Indicators_Medium.csv
+- Topic: Demographic Indicators from 1950-2100
 
 ### Description
 This file contains demographic indicators from the United Nations World Population Prospects (WPP) 2024, Medium Variant scenario.
@@ -18,17 +18,34 @@ It is designed for population and demographic analysis across countries/areas an
 - UN WPP download page (CSV, Standard Projections): https://population.un.org/wpp/downloads?folder=Standard%20Projections&group=CSV%20format
 
 ### What Can Be Found In This File
-- A standardized indicator model with fields:
-	- IndicatorNo
-	- Topic
-	- Indicator
-	- IndicatorName
-	- Unit
-- Indicators grouped into core themes:
-	- Population
-	- Fertility
-	- Mortality
-	- Migration
+- Record-level metadata columns (identifiers, geography, and scenario/time context)
+- Demographic measure columns (population, fertility, mortality, migration indicators)
+- Values are primarily annual snapshots/projections by location and variant
+
+### Full Column Groups In The CSV
+
+#### Metadata And Keys
+| Column | Description |
+|---|---|
+| SortOrder | Display/sorting order for locations in WPP outputs. |
+| LocID | Unique WPP location identifier. |
+| Notes | Data notes/footnotes for the row/location when applicable. |
+| ISO3_code | ISO 3166-1 alpha-3 country code. |
+| ISO2_code | ISO 3166-1 alpha-2 country code. |
+| SDMX_code | SDMX location code used in statistical exchange formats. |
+| LocTypeID | Numeric location type identifier (for example country/region grouping). |
+| LocTypeName | Human-readable location type label. |
+| ParentID | Parent location identifier (hierarchical geography). |
+| Location | Location name. |
+| VarID | Numeric scenario/variant identifier. |
+| Variant | Scenario/variant name (this file uses Medium variant). |
+| Time | Year (time dimension). |
+
+#### Measure Columns In This File
+- Population: TPopulation1Jan, TPopulation1July, TPopulationMale1July, TPopulationFemale1July, PopDensity, PopSexRatio, MedianAgePop, NatChange, NatChangeRT, PopChange, PopGrowthRate, DoublingTime
+- Fertility: Births, Births1519, CBR, TFR, NRR, MAC, SRB
+- Mortality: Deaths, DeathsMale, DeathsFemale, CDR, LEx, LExMale, LExFemale, LE15, LE15Male, LE15Female, LE65, LE65Male, LE65Female, LE80, LE80Male, LE80Female, InfantDeaths, IMR, LBsurvivingAge1, Under5Deaths, Q5, Q0040, Q0040Male, Q0040Female, Q0060, Q0060Male, Q0060Female, Q1550, Q1550Male, Q1550Female, Q1560, Q1560Male, Q1560Female
+- Migration: NetMigrations, CNMR
 
 ### Indicator Dictionary
 
@@ -52,8 +69,6 @@ It is designed for population and demographic analysis across countries/areas an
 | IndicatorNo | Indicator | IndicatorName | Unit |
 |---:|---|---|---|
 | 13 | Births | Births | thousands |
-| 58 | BirthsMale | Male Births | thousands |
-| 59 | BirthsFemale | Females Births | thousands |
 | 14 | Births1519 | Births by women aged 15 to 19 | thousands |
 | 15 | CBR | Crude Birth Rate | births per 1,000 population |
 | 16 | TFR | Total Fertility Rate | live births per woman |
@@ -74,9 +89,6 @@ It is designed for population and demographic analysis across countries/areas an
 | 27 | LE15 | Life Expectancy at Age 15, both sexes | years |
 | 28 | LE15Male | Male Life Expectancy at Age 15 | years |
 | 29 | LE15Female | Female Life Expectancy at Age 15 | years |
-| 55 | LE60 | Life Expectancy at Age 60, both sexes | years |
-| 56 | LE60Male | Male Life Expectancy at Age 60 | years |
-| 57 | LE60Female | Female Life Expectancy at Age 60 | years |
 | 30 | LE65 | Life Expectancy at Age 65, both sexes | years |
 | 31 | LE65Male | Male Life Expectancy at Age 65 | years |
 | 32 | LE65Female | Female Life Expectancy at Age 65 | years |
