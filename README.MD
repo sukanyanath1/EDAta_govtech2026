@@ -36,15 +36,41 @@ Copy the `env.example` file into `.env` file. Fill in the environment variables.
 
 </details>
 
+## Make Commands
+
+| Command | Description |
+|---|---|
+| `make run-backend` | Start the FastAPI agent server on `http://localhost:8000` |
+| `make run-frontend` | Start the Streamlit chat UI on `http://localhost:8501` |
+| `make run` | Start both backend and frontend simultaneously |
+| `make download_imf_data` | Download IMF GDP growth data to `data/imf/` |
+
+---
+
 ## Running the Agent
 
-Start the API server:
+**Backend only:**
 
 ```bash
-make run-agent-demo
+make run-backend
 ```
 
-The server starts at `http://localhost:8000`. Interactive docs are available at `http://localhost:8000/docs`.
+**Frontend only** (requires backend already running):
+
+```bash
+make run-frontend
+```
+
+**Both at once:**
+
+```bash
+make run
+```
+
+This starts uvicorn in the background and Streamlit in the foreground. Press `Ctrl+C` to stop both.
+
+- Backend API + docs: `http://localhost:8000/docs`
+- Chat UI: `http://localhost:8501`
 
 ---
 
