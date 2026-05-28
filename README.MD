@@ -31,4 +31,7 @@ uv pip install -r pyproject.toml
 pre-commit install
 ```
 
+- Adding the environment file
+Copy the `env.example` file into `.env` file. Fill in the environment variables.
+
 </details>
