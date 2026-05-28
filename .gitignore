@@ -4,3 +4,4 @@
 .__pycache__
 app/v1/__pycache__/
 app/v1/tools/__pycache__/
+data/imf/
