@@ -1,5 +1,12 @@
 # Gov Tech Hackathon - EDAtaBot
 
+EDAta is a **Switzerland-centric diplomatic economic intelligence agent** for Swiss diplomats.
+It answers questions about partner countries and bilateral relationships by combining live data from the IMF, World Bank, SNB (Swiss National Bank), and BAZG/SwissImpex into a structured evidence pack, then synthesises a concise diplomatic briefing.
+
+Switzerland is always the reference country. Bilateral data (services trade, FDI, goods trade) always reflects Switzerland's relationship with the partner.
+
+---
+
 # Setup
 
 ## Configure the Python environment
@@ -152,16 +159,27 @@ Every user question flows through a deterministic four-stage pipeline before any
 ```
 User question
      ↓
-1. Planner agent       — extracts a structured plan (countries, bundle, year range)
+1. Planner agent        — extracts countries (ISO codes), bundle, year range
      ↓
-2. Indicator resolver  — maps the bundle name to a list of IMF codes
+2. Indicator resolver   — maps the bundle to a list of indicator codes
      ↓
-3. IMF evidence layer  — fetches data from IMF DataMapper API, builds evidence pack
+3. Evidence layer       — fetches from IMF / World Bank / SNB / BAZG, builds evidence pack
      ↓
-4. Analysis agent      — reads the evidence pack, writes a diplomatic briefing
+4. Analysis agent       — reads evidence pack, writes a Switzerland-perspective briefing
 ```
 
-The LLM never calls the IMF API directly and never sees raw HTTP responses. It only reads the structured evidence pack when writing the final answer.
+The LLM never calls any API directly and never sees raw HTTP responses. It only reads the structured evidence pack when writing the final answer.
+
+**Data sources:**
+
+| Level | Source | Data |
+|---|---|---|
+| L1 | IMF DataMapper | Partner country macroeconomic indicators (GDP, inflation, debt, etc.) |
+| L1 | World Bank | GNI per capita / income category |
+| L1 | WIPO | Global Innovation Index rank (static, loaded from ADLS) |
+| L2 | SNB — `bopserva` | Switzerland's bilateral services trade (credits, debits, total, share) |
+| L3 | SNB — `fdiausbla` | Switzerland's direct investment abroad (stock, country share) |
+| L4 | BAZG / SwissImpex | Switzerland's bilateral goods trade (exports, imports, total, share, rank) |
 
 **Project structure:**
 
@@ -172,12 +190,15 @@ app/v1/
     analysis_agent.py     — LLM call #2: evidence pack → diplomatic briefing
     agent_factory.py      — orchestrates the full pipeline; yields SSE progress events
   services/
-    indicator_catalog_service.py  — loads imf_indicator_catalog.yaml and imf_bundles.yaml
+    indicator_catalog_service.py  — loads indicator_catalog.yaml and indicator_bundles.yaml
     country_resolver.py           — maps country/region names → ISO Alpha-3 codes
-    imf_client.py                 — HTTP client for the IMF DataMapper REST API
-    evidence_builder.py           — calls imf_client per indicator, returns EvidencePack
+    imf_client.py                 — HTTP client for IMF DataMapper REST API
+    worldbank_client.py           — HTTP client for World Bank REST API v2
+    snb_client.py                 — HTTP client for SNB cube API (bopserva, fdiausbla)
+    swissimpex_client.py          — BAZG goods trade (reads from ADLS; set SWISSIMPEX_ADLS_PATH)
+    evidence_builder.py           — routes each indicator to its source client, returns EvidencePack
   tools/
-    imf_tools.py          — 3 semantic LangChain tools
+    imf_tools.py          — semantic LangChain tools
     adls_tools.py         — Azure Data Lake tools (list, read, write, delete files)
   schemas/
     planning.py           — AnalysisPlan Pydantic model
@@ -186,78 +207,94 @@ app/v1/
   main.py                 — FastAPI; exposes /chat (blocking) and /chat/stream (SSE)
 
 data/yaml/
-  imf_indicator_catalog.yaml  — 11 curated IMF indicators with metadata
-  imf_bundles.yaml            — 5 analytical bundles
-  country_groups.yaml         — 80+ country aliases + 10 region groups
+  indicator_catalog.yaml   — 21 curated indicators across all four sources
+  indicator_bundles.yaml   — 6 analytical bundles (Switzerland-centric)
+  country_groups.yaml      — 80+ country aliases + 10 region groups
 
 frontend/
   app.py      — Streamlit chat UI; consumes SSE stream, shows steps + evidence table
   config.py   — frontend settings (BACKEND_URL)
 ```
 
+**Indicator bundles:**
+
+| Bundle | Use when | Data sources |
+|---|---|---|
+| `ch_bilateral_overview` | Full bilateral picture of any country | IMF + World Bank + SNB + BAZG |
+| `ch_trade_partner_assessment` | Trade relevance to Switzerland | IMF + SNB services + BAZG goods |
+| `ch_investment_partner_assessment` | FDI attractiveness for Switzerland | IMF + World Bank + SNB FDI |
+| `partner_economic_profile` | Partner macro health only | IMF + World Bank |
+| `macro_risk` | Financial vulnerability of partner | IMF |
+| `debt_sustainability` | Fiscal and debt trajectory | IMF |
+
 **Agents:**
 
 | Agent | File | Role |
 |---|---|---|
 | Planner | `agents/planner_agent.py` | Extracts `task_type`, countries (ISO codes), bundle, and year range from the user question. No API calls. |
-| Analysis | `agents/analysis_agent.py` | Reads the evidence pack and writes a structured diplomatic briefing. No API calls. |
+| Analysis | `agents/analysis_agent.py` | Reads evidence pack and writes a Switzerland-perspective diplomatic briefing. No API calls. |
 | Factory | `agents/agent_factory.py` | Orchestrates the full pipeline. Emits SSE events: `step`, `plan`, `evidence`, `answer`, `error`, `done`. |
 
-**Indicator bundles:**
+---
 
-| Bundle | Indicators |
-|---|---|
-| `country_profile` | GDP growth, GDP USD, GDP per capita, inflation, gov. debt, fiscal balance, current account, unemployment, population |
-| `macro_risk` | GDP growth, inflation, gov. debt, fiscal balance, current account |
-| `trade_potential` | GDP growth, GDP USD, GDP per capita, exports, imports, current account, population |
-| `debt_sustainability` | GDP growth, inflation, gov. debt, fiscal balance, current account |
-| `investment_assessment` | GDP growth, GDP USD, GDP per capita, inflation, gov. debt, fiscal balance, current account, exports, unemployment |
+# Example Questions
 
-**LangChain tools:**
+**Full bilateral overview**
+> "Give me a full overview of Switzerland's relationship with Vietnam."
+> "Prepare a country briefing on India for the State Secretariat."
 
-| Tool | Description |
-|---|---|
-| `resolve_country_or_region` | Resolves plain names or regions (e.g. "Vietnam", "ASEAN") to ISO Alpha-3 codes |
-| `select_imf_bundle` | Returns indicator codes for a given task type |
-| `get_imf_evidence_pack` | Retrieves IMF data for countries and indicators, returns a structured evidence pack |
+Uses `ch_bilateral_overview`. Returns IMF macro profile + Swiss services trade (SNB) + Swiss FDI (SNB) + Swiss goods trade (BAZG).
 
 ---
 
-# Use Cases
+**Trade partner assessment**
+> "How important is Germany as a trade partner for Switzerland?"
+> "Should Switzerland deepen trade ties with Indonesia?"
+> "Compare Vietnam, Thailand, and Malaysia as Swiss export markets."
 
-**Country economic profile**
-> "Give me an economic overview of Vietnam."
-
-Uses `country_profile` bundle. Retrieves GDP, inflation, debt, fiscal balance, current account, unemployment, and population.
-
-**Macroeconomic risk assessment**
-> "Is Egypt financially vulnerable?" / "Assess macro risks in Argentina."
-
-Uses `macro_risk` bundle. Highlights fiscal pressure, inflation, and external balance signals.
-
-**Trade and investment opportunity**
-> "Should we increase economic engagement with Vietnam over the next 5 years?" / "Compare India and Indonesia as trade partners."
-
-Uses `trade_potential` or `investment_assessment` bundle. Includes export/import dynamics, GDP size, and market growth.
-
-**Debt sustainability review**
-> "Is Ghana's debt sustainable?" / "Review Sri Lanka's fiscal position."
-
-Uses `debt_sustainability` bundle. Focuses on debt-to-GDP, fiscal deficit, and growth trajectory.
-
-**Multi-country comparison**
-> "Compare Vietnam, Thailand, and Indonesia for investment potential."
-
-Includes all countries in the evidence pack and produces a side-by-side briefing.
-
-**Regional assessment**
-> "Give me a macro overview of ASEAN." / "Which BRICS country has the strongest growth outlook?"
-
-The country resolver expands region names (e.g. `asean` → 10 ISO codes) automatically.
+Uses `ch_trade_partner_assessment`. Combines partner economic fundamentals with Swiss bilateral goods and services trade data.
 
 ---
 
-The country resolver expands region names (e.g. `asean` → 10 country codes) automatically.
+**Investment partner assessment**
+> "Assess the investment climate in Nigeria from a Swiss perspective."
+> "Is Egypt an attractive destination for Swiss FDI?"
+> "Compare investment risk in Brazil versus Argentina."
+
+Uses `ch_investment_partner_assessment`. Highlights economic stability, income level, and existing Swiss FDI position.
+
+---
+
+**Partner economic profile**
+> "What is Vietnam's economic situation?"
+> "Is Turkey financially stable?"
+
+Uses `partner_economic_profile`. IMF + World Bank data on growth, inflation, debt, current account, and income level.
+
+---
+
+**Macro risk**
+> "Is Argentina financially vulnerable?"
+> "Assess macro risks in Ghana."
+
+Uses `macro_risk`. Focuses on inflation, fiscal balance, debt, and external account signals.
+
+---
+
+**Debt sustainability**
+> "Is Sri Lanka's debt sustainable?"
+> "Review Kenya's fiscal position."
+
+Uses `debt_sustainability`. GDP growth trajectory against debt-to-GDP, deficit, and current account.
+
+---
+
+**Regional questions**
+> "Give me a macro overview of ASEAN."
+> "Which BRICS country has the strongest growth outlook for Swiss investment?"
+> "How exposed is Switzerland to the Gulf region?"
+
+The country resolver expands region names (e.g. `asean` → 10 ISO codes, `brics`, `g7`, `gulf`, `dach`) automatically.
 
 ---
 

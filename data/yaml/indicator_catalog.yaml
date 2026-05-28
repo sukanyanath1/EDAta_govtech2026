@@ -1,0 +1,292 @@
+# Master indicator catalog — all sources
+# source field drives routing in evidence_builder.py
+# Swiss bilateral indicators (SNB, BAZG) always reflect CH ↔ partner country
+
+# ══════════════════════════════════════════════════════════════════════════════
+# LEVEL 1 — Economic Stability (IMF / World Bank / WIPO)
+# ══════════════════════════════════════════════════════════════════════════════
+
+- id: gdp_usd
+  name: GDP, current prices (USD)
+  code: NGDPD
+  source: IMF
+  unit: Billions of USD
+  level: "Level 1 - Economic Stability"
+  category: growth
+  default_tasks:
+    - partner_economic_profile
+    - ch_trade_partner_assessment
+    - ch_investment_partner_assessment
+    - ch_bilateral_overview
+  interpretation_hint: Indicates the absolute economic size of the partner country.
+
+- id: gdp_growth
+  name: Real GDP growth
+  code: NGDP_RPCH
+  source: IMF
+  unit: Percent change
+  level: "Level 1 - Economic Stability"
+  category: growth
+  default_tasks:
+    - partner_economic_profile
+    - ch_trade_partner_assessment
+    - ch_investment_partner_assessment
+    - ch_bilateral_overview
+  interpretation_hint: Shows whether the partner economy is expanding or slowing.
+
+- id: gdp_per_capita
+  name: GDP per capita, current prices
+  code: NGDPDPC
+  source: IMF
+  unit: USD per person
+  level: "Level 1 - Economic Stability"
+  category: growth
+  default_tasks:
+    - partner_economic_profile
+    - ch_trade_partner_assessment
+    - ch_investment_partner_assessment
+    - ch_bilateral_overview
+  interpretation_hint: Measures development level and purchasing power.
+
+- id: inflation
+  name: Inflation, average consumer prices
+  code: PCPIPCH
+  source: IMF
+  unit: Percent change
+  level: "Level 1 - Economic Stability"
+  category: price_stability
+  default_tasks:
+    - partner_economic_profile
+    - ch_investment_partner_assessment
+    - ch_bilateral_overview
+  interpretation_hint: High or volatile inflation indicates macroeconomic stress.
+
+- id: unemployment
+  name: Unemployment rate
+  code: LUR
+  source: IMF
+  unit: Percent of total labour force
+  level: "Level 1 - Economic Stability"
+  category: labour
+  default_tasks:
+    - partner_economic_profile
+    - ch_bilateral_overview
+  interpretation_hint: Reflects social and economic pressure; high unemployment may dampen domestic demand.
+
+- id: government_debt
+  name: General government gross debt
+  code: GGXWDG_NGDP
+  source: IMF
+  unit: Percent of GDP
+  level: "Level 1 - Economic Stability"
+  category: fiscal
+  default_tasks:
+    - partner_economic_profile
+    - ch_investment_partner_assessment
+    - ch_bilateral_overview
+  interpretation_hint: High debt levels relative to GDP indicate fiscal vulnerability.
+
+- id: fiscal_balance
+  name: General government net lending / borrowing
+  code: GGXCNL_NGDP
+  source: IMF
+  unit: Percent of GDP
+  level: "Level 1 - Economic Stability"
+  category: fiscal
+  default_tasks:
+    - partner_economic_profile
+    - ch_investment_partner_assessment
+  interpretation_hint: Persistent deficits indicate structural fiscal pressure.
+
+- id: current_account
+  name: Current account balance
+  code: BCA_NGDPD
+  source: IMF
+  unit: Percent of GDP
+  level: "Level 1 - Economic Stability"
+  category: external_position
+  default_tasks:
+    - partner_economic_profile
+    - ch_investment_partner_assessment
+  interpretation_hint: Persistent deficits may signal external financing pressure.
+
+- id: gni_per_capita
+  name: GNI per capita (Atlas method)
+  code: NY.GNP.PCAP.CD
+  source: World Bank
+  unit: Current USD
+  level: "Level 1 - Economic Stability"
+  category: income
+  default_tasks:
+    - partner_economic_profile
+    - ch_bilateral_overview
+  interpretation_hint: Proxy for income category (low / middle / high income). Drives economic maturity assessment.
+
+- id: innovation_index
+  name: Global Innovation Index rank
+  code: GII_RANK
+  source: WIPO
+  unit: Rank (1 = most innovative)
+  level: "Level 1 - Economic Stability"
+  category: competitiveness
+  default_tasks:
+    - partner_economic_profile
+    - ch_investment_partner_assessment
+  interpretation_hint: Indicates innovation and competitiveness of the partner economy.
+  note: Static annual data — loaded from ADLS, not live API.
+
+# ══════════════════════════════════════════════════════════════════════════════
+# LEVEL 2 — Services Trade (SNB — Switzerland bilateral)
+# ══════════════════════════════════════════════════════════════════════════════
+
+- id: ch_services_receipts
+  name: Swiss services trade receipts from partner (credits)
+  code: bopserva_credits
+  source: SNB
+  snb_cube: bopserva
+  snb_dimension: credits
+  unit: Millions of CHF
+  level: "Level 2 - Services Trade"
+  category: ch_services_trade
+  default_tasks:
+    - ch_trade_partner_assessment
+    - ch_bilateral_overview
+  interpretation_hint: Revenue Switzerland earns from exporting services to the partner country.
+
+- id: ch_services_expenditures
+  name: Swiss services trade expenditures to partner (debits)
+  code: bopserva_debits
+  source: SNB
+  snb_cube: bopserva
+  snb_dimension: debits
+  unit: Millions of CHF
+  level: "Level 2 - Services Trade"
+  category: ch_services_trade
+  default_tasks:
+    - ch_trade_partner_assessment
+    - ch_bilateral_overview
+  interpretation_hint: Amount Switzerland spends on services imported from the partner country.
+
+- id: ch_services_trade_total
+  name: Total bilateral services trade (Switzerland)
+  code: bopserva_total
+  source: SNB
+  snb_cube: bopserva
+  snb_dimension: total
+  unit: Millions of CHF
+  level: "Level 2 - Services Trade"
+  category: ch_services_trade
+  default_tasks:
+    - ch_trade_partner_assessment
+    - ch_bilateral_overview
+  interpretation_hint: Overall services trade activity between Switzerland and the partner country.
+
+- id: ch_services_trade_share
+  name: Partner country share of Swiss total services trade
+  code: bopserva_share
+  source: SNB
+  snb_cube: bopserva
+  snb_dimension: country_share
+  unit: Percent
+  level: "Level 2 - Services Trade"
+  category: ch_services_trade
+  default_tasks:
+    - ch_trade_partner_assessment
+    - ch_bilateral_overview
+  interpretation_hint: Strategic relevance to Switzerland — higher share means greater bilateral importance.
+
+# ══════════════════════════════════════════════════════════════════════════════
+# LEVEL 3 — Direct Investments (SNB — Switzerland bilateral)
+# ══════════════════════════════════════════════════════════════════════════════
+
+- id: ch_fdi_abroad
+  name: Swiss direct investments abroad in partner country
+  code: fdiausbla_stock
+  source: SNB
+  snb_cube: fdiausbla
+  snb_dimension: stock
+  unit: Millions of CHF
+  level: "Level 3 - Direct Investments"
+  category: ch_investment
+  default_tasks:
+    - ch_investment_partner_assessment
+    - ch_bilateral_overview
+  interpretation_hint: Total stock of Swiss FDI in the partner country. High values indicate deep Swiss economic exposure.
+
+- id: ch_fdi_share
+  name: Partner country share of total Swiss FDI abroad
+  code: fdiausbla_share
+  source: SNB
+  snb_cube: fdiausbla
+  snb_dimension: country_share
+  unit: Percent
+  level: "Level 3 - Direct Investments"
+  category: ch_investment
+  default_tasks:
+    - ch_investment_partner_assessment
+    - ch_bilateral_overview
+  interpretation_hint: Relative strategic importance as a destination for Swiss capital.
+
+# ══════════════════════════════════════════════════════════════════════════════
+# LEVEL 4 — Goods Trade (BAZG / SwissImpex — Switzerland bilateral)
+# ══════════════════════════════════════════════════════════════════════════════
+
+- id: ch_exports_chf
+  name: Swiss exports to partner country
+  code: swissimpex_exports
+  source: BAZG
+  unit: Millions of CHF
+  level: "Level 4 - Goods Trade"
+  category: ch_goods_trade
+  default_tasks:
+    - ch_trade_partner_assessment
+    - ch_bilateral_overview
+  interpretation_hint: Importance of the partner as an export market for Swiss goods.
+
+- id: ch_imports_chf
+  name: Swiss imports from partner country
+  code: swissimpex_imports
+  source: BAZG
+  unit: Millions of CHF
+  level: "Level 4 - Goods Trade"
+  category: ch_goods_trade
+  default_tasks:
+    - ch_trade_partner_assessment
+    - ch_bilateral_overview
+  interpretation_hint: Import dependency on the partner country for goods.
+
+- id: ch_goods_trade_total
+  name: Total bilateral goods trade (Switzerland)
+  code: swissimpex_total
+  source: BAZG
+  unit: Millions of CHF
+  level: "Level 4 - Goods Trade"
+  category: ch_goods_trade
+  default_tasks:
+    - ch_trade_partner_assessment
+    - ch_bilateral_overview
+  interpretation_hint: Overall goods trade volume between Switzerland and the partner country.
+
+- id: ch_goods_trade_share
+  name: Partner country share of Swiss total goods trade
+  code: swissimpex_share
+  source: BAZG
+  unit: Percent
+  level: "Level 4 - Goods Trade"
+  category: ch_goods_trade
+  default_tasks:
+    - ch_trade_partner_assessment
+    - ch_bilateral_overview
+  interpretation_hint: Strategic relevance of the partner to Swiss goods trade.
+
+- id: ch_trade_partner_rank
+  name: Partner country rank as Swiss trade partner
+  code: swissimpex_rank
+  source: BAZG
+  unit: Rank
+  level: "Level 4 - Goods Trade"
+  category: ch_goods_trade
+  default_tasks:
+    - ch_trade_partner_assessment
+    - ch_bilateral_overview
+  interpretation_hint: Relative importance as a goods trade partner; rank 1 = largest partner.

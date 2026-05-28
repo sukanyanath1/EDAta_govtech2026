@@ -64,7 +64,8 @@ def run_stream(
     for code in indicator_codes:
         meta = indicator_catalog_service.get_indicator_metadata(code)
         label = meta["name"] if meta else code
-        yield _event("step", text=f"Fetching {label} ({code})…")
+        source = meta["source"] if meta else "?"
+        yield _event("step", text=f"Fetching {label} ({code}) [{source}]…")
 
     # ── Step 3: Retrieve evidence ─────────────────────────────────────────────
     all_countries = plan.countries + plan.comparison_countries
