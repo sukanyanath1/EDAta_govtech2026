@@ -1,4 +1,4 @@
-# Gov Tech Hackathon - EDAta
+# Gov Tech Hackathon - EDAtaBot
 
 # Setup
 
@@ -36,7 +36,68 @@ Copy the `env.example` file into `.env` file. Fill in the environment variables.
 
 </details>
 
-## Use Cases
+## Running the Agent
 
-# IMF
+Start the API server:
+
+```bash
+make run-agent-demo
+```
+
+The server starts at `http://localhost:8000`. Interactive docs are available at `http://localhost:8000/docs`.
+
+---
+
+## API Reference
+
+### Health check
+
+```bash
+curl http://localhost:8000/health
+```
+
+```json
+{"status": "ok"}
+```
+
+---
+
+### Chat with the agent
+
+**Single turn:**
+
+```bash
+curl -X POST http://localhost:8000/chat \
+  -H "Content-Type: application/json" \
+  -d '{"message": "List all files in the raw/ directory"}'
+```
+
+**Multi-turn (pass prior history):**
+
+```bash
+curl -X POST http://localhost:8000/chat \
+  -H "Content-Type: application/json" \
+  -d '{
+    "message": "Now read the first file you found",
+    "history": [
+      {"role": "human", "content": "List all files in the raw/ directory"},
+      {"role": "ai",    "content": "I found the following files: raw/data.csv"}
+    ]
+  }'
+```
+
+**Response shape:**
+
+```json
+{"response": "<agent answer>"}
+```
+
+---
+
+### Use Cases
+
+## Conversational AI
+Connect a chatbot to the data lake to 
+
+# IMF data 
 Data Source : [IMF Data](https://data.imf.org/en/datasets/IMF.RES:WEO)
