@@ -1,0 +1,27 @@
+# Open Data sources
+
+- https://int.api.eda.admin.ch/economics
+- https://int.api.eda.admin.ch/openapi.json
+- https://www.imf.org/en/Publications/SPROLLs/world-economic-outlook-databases#sort=%40imfdate%20descending
+- https://data.imf.org/?sk=9d6028d4-f14a-464c-a2f2-59b2cd424b85
+- https://data.imf.org/?sk=40313609-f037-48c1-84b1-e1f1ce54d6d5
+- https://unctad.org/publication/world-investment-report-2023
+- https://databank.worldbank.org/source/world-development-indicators
+- https://population.un.org/wpp/
+- https://www.sipri.org/databases/milex
+- https://www.unhcr.org/refugee-statistics/download/?url=WEG34g
+- https://www.iea.org/data-and-statistics
+- https://hdr.undp.org/data-center/human-development-index#/indicies/HDI
+- https://www.heritage.org/index/
+- https://www.v-dem.net/
+- https://www.transparency.org/en/cpi/2022
+- https://www.wipo.int/edocs/pubdocs/en/wipo-pub-2000-2023-en-main-report-global-innovation-index-2023-16th-edition.pdf
+- https://www.imd.org/centers/wcc/world-competitiveness-center/rankings/world-competitiveness-ranking/
+- https://www.gate.ezv.admin.ch/swissimpex/
+- https://app.powerbi.com/view?r=eyJrIjoiMTE0MmMxMWQtMjU2NS00Yzg5LWIyOWEtNDFlOGJmNjg3YTJmIiwidCI6IjZjNGI0ZWU0LWMxNmYtNGQyZC05NGQ4LTU5ZTE3ODUyYTkzZiJ9
+- https://data.snb.ch/de/topics/aube/cube/fdiausbla
+- https://www.bfs.admin.ch/bfs/de/home/statistiken/bevoelkerung/migration-integration/auslandschweizer.assetdetail.24310288.html
+- https://www.bfs.admin.ch/bfs/de/home/statistiken/bevoelkerung/migration-integration/auslaendische-bevoelkerung/zusammensetzung.html
+- https://www.sem.admin.ch/sem/de/home/publiservice/statistik/auslaenderstatistik/archiv/2023/12.html
+- https://data.oecd.org/
+- https://store.eiu.com/product/eiu-viewpoint-country-analysis/switzerland
