@@ -101,3 +101,7 @@ Connect a chatbot to the data lake to
 
 # IMF data 
 Data Source : [IMF Data](https://data.imf.org/en/datasets/IMF.RES:WEO)
+
+# Data
+
+If you add a new dataset, please add it to the topic folder (might not exist yet) and add an entry to the data-catalog.md (see previous as an example)
