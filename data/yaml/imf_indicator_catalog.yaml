@@ -1,0 +1,136 @@
+# ── Growth ────────────────────────────────────────────────────────────────────
+
+- id: gdp_growth
+  name: Real GDP growth
+  imf_code: NGDP_RPCH
+  source: IMF DataMapper / WEO
+  unit: Percent change
+  category: growth
+  default_tasks:
+    - country_profile
+    - macro_risk
+    - investment_assessment
+    - trade_potential
+    - debt_sustainability
+  interpretation_hint: Shows whether the economy is expanding or slowing.
+
+- id: gdp_current_usd
+  name: GDP, current prices
+  imf_code: NGDPD
+  source: IMF DataMapper / WEO
+  unit: Billions of USD
+  category: growth
+  default_tasks:
+    - country_profile
+    - trade_potential
+  interpretation_hint: Indicates the absolute economic size of the country.
+
+- id: gdp_per_capita
+  name: GDP per capita, current prices
+  imf_code: NGDPDPC
+  source: IMF DataMapper / WEO
+  unit: USD per person
+  category: growth
+  default_tasks:
+    - country_profile
+    - trade_potential
+    - investment_assessment
+  interpretation_hint: Measures living standards and development level.
+
+# ── Prices ────────────────────────────────────────────────────────────────────
+
+- id: inflation
+  name: Inflation, average consumer prices
+  imf_code: PCPIPCH
+  source: IMF DataMapper / WEO
+  unit: Percent change
+  category: price_stability
+  default_tasks:
+    - country_profile
+    - macro_risk
+    - debt_sustainability
+  interpretation_hint: High or volatile inflation indicates macroeconomic stress.
+
+# ── Fiscal ────────────────────────────────────────────────────────────────────
+
+- id: government_debt
+  name: General government gross debt
+  imf_code: GGXWDG_NGDP
+  source: IMF DataMapper / WEO
+  unit: Percent of GDP
+  category: fiscal
+  default_tasks:
+    - country_profile
+    - macro_risk
+    - debt_sustainability
+  interpretation_hint: High debt levels relative to GDP may constrain future fiscal space.
+
+- id: fiscal_balance
+  name: General government net lending / borrowing
+  imf_code: GGXCNL_NGDP
+  source: IMF DataMapper / WEO
+  unit: Percent of GDP
+  category: fiscal
+  default_tasks:
+    - country_profile
+    - macro_risk
+    - debt_sustainability
+  interpretation_hint: Persistent deficits indicate structural fiscal pressure.
+
+# ── External position ─────────────────────────────────────────────────────────
+
+- id: current_account
+  name: Current account balance
+  imf_code: BCA_NGDPD
+  source: IMF DataMapper / WEO
+  unit: Percent of GDP
+  category: external_position
+  default_tasks:
+    - macro_risk
+    - external_vulnerability
+  interpretation_hint: Persistent deficits may signal external financing pressure.
+
+- id: export_volume_growth
+  name: Export volume of goods and services
+  imf_code: TX_RPCH
+  source: IMF DataMapper / WEO
+  unit: Percent change
+  category: external_position
+  default_tasks:
+    - trade_potential
+    - investment_assessment
+  interpretation_hint: Growing exports indicate increasing international competitiveness.
+
+- id: import_volume_growth
+  name: Import volume of goods and services
+  imf_code: TM_RPCH
+  source: IMF DataMapper / WEO
+  unit: Percent change
+  category: external_position
+  default_tasks:
+    - trade_potential
+  interpretation_hint: Import growth reflects domestic demand and reliance on foreign goods.
+
+# ── Labour and social ─────────────────────────────────────────────────────────
+
+- id: unemployment
+  name: Unemployment rate
+  imf_code: LUR
+  source: IMF DataMapper / WEO
+  unit: Percent of total labour force
+  category: labour
+  default_tasks:
+    - country_profile
+    - investment_assessment
+  interpretation_hint: High unemployment may signal weak domestic demand or structural issues.
+
+- id: population
+  name: Population
+  imf_code: LP
+  source: IMF DataMapper / WEO
+  unit: Millions of persons
+  category: labour
+  default_tasks:
+    - country_profile
+    - trade_potential
+  interpretation_hint: Market size indicator; large populations may offer greater long-term growth potential.

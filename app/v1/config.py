@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from pydantic import SecretStr
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -13,7 +14,7 @@ class Settings(BaseSettings):
     )
 
     # ── OpenAI ────────────────────────────────────────────────────────────────
-    openai_api_key: str
+    openai_api_key: SecretStr
     openai_model: str
 
     # ── Azure Data Lake Storage Gen2 ──────────────────────────────────────────

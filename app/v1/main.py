@@ -1,12 +1,15 @@
-"""FastAPI application exposing the EDAta ADLS agent."""
+"""FastAPI application exposing the EDAta IMF agent."""
 
 from __future__ import annotations
 
+import json
+
 from fastapi import FastAPI, HTTPException
+from fastapi.responses import StreamingResponse
 from langchain_core.messages import AIMessage, HumanMessage
 from pydantic import BaseModel
 
-from app.v1.agent import run_agent
+from app.v1.agents import agent_factory
 
 app = FastAPI(
     title="EDAta Agent",
@@ -54,20 +57,9 @@ def health() -> dict[str, str]:
 
 @app.post("/chat", response_model=ChatResponse)
 def chat(request: ChatRequest) -> ChatResponse:
-    """Send a message to the ADLS agent and receive a response.
-
-    Pass optional `history` for multi-turn conversations.
-
-    Example body:
-    ```json
-    {
-      "message": "List all files in the raw/ directory",
-      "history": []
-    }
-    ```
-    """
+    """Blocking chat endpoint — returns only the final answer."""
     try:
-        answer = run_agent(
+        answer = agent_factory.run(
             user_input=request.message,
             chat_history=_to_lc_messages(request.history),
         )
@@ -75,3 +67,26 @@ def chat(request: ChatRequest) -> ChatResponse:
         raise HTTPException(status_code=500, detail=str(exc)) from exc
 
     return ChatResponse(response=answer)
+
+
+@app.post("/chat/stream")
+def chat_stream(request: ChatRequest) -> StreamingResponse:
+    """Streaming SSE endpoint — emits pipeline progress events in real time.
+
+    Each event is a JSON line prefixed with 'data: ', followed by two newlines.
+
+    Event types:
+    - step     {"type": "step",     "text": "..."}
+    - plan     {"type": "plan",     "data": {...}}
+    - evidence {"type": "evidence", "data": {...}}
+    - answer   {"type": "answer",   "text": "..."}
+    - error    {"type": "error",    "text": "..."}
+    - done     {"type": "done"}
+    """
+    history = _to_lc_messages(request.history)
+
+    def _event_stream():
+        for event in agent_factory.run_stream(request.message, history):
+            yield f"data: {json.dumps(event)}\n\n"
+
+    return StreamingResponse(_event_stream(), media_type="text/event-stream")
