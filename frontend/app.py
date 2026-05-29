@@ -15,32 +15,13 @@ from config import settings
 BACKEND_URL = settings.backend_url
 
 st.set_page_config(
-    page_title="AIDA Agent",
+    page_title="AIDA — AI Diplomatic Assistant",
     page_icon="🌍",
     layout="wide",
 )
 
-# Small CSS tweaks for spacing and font
-st.markdown(
-    """
-    <style>
-    .stApp { font-family: Inter, Arial, sans-serif; }
-    .eda-caption { color: #444444; margin-top: -8px; }
-    </style>
-    """,
-    unsafe_allow_html=True,
-)
-
-# Header with logo on the left and title on the right (logo width 300, left-aligned)
-col1, col2 = st.columns([0.30, 0.70])
-with col1:
-    try:
-        st.image("frontend/static/eda-logo.svg", width=350)
-    except Exception:
-        pass
-with col2:
-    st.markdown("# AIDA — AI Diplomatic Assistant")
-    st.markdown("<p class='eda-caption'>Ask a diplomatic or economic question. The agent retrieves live data and writes a briefing.</p>", unsafe_allow_html=True)
+st.title("AIDA — AI Diplomatic Assistant")
+st.caption("Ask a diplomatic or economic question. The agent retrieves live data and writes a briefing.")
 
 # ── Session state ──────────────────────────────────────────────────────────────
 
@@ -59,6 +40,7 @@ def _evidence_to_dataframe(evidence: dict) -> pd.DataFrame | None:
         base = {
             "Country": rec.get("country_name", rec["country_code"]),
             "Indicator": rec.get("indicator_name", rec["indicator_code"]),
+            "Source": rec.get("source", ""),
             "Unit": rec.get("unit", ""),
         }
         base.update(rec.get("values", {}))
@@ -161,7 +143,7 @@ if prompt := st.chat_input("e.g. Should we increase engagement with Vietnam?"):
 
         # ── Source data expander ───────────────────────────────────────────────
         if evidence_data:
-            with st.expander("📊 View source data (IMF)", expanded=False):
+            with st.expander("📊 View source data", expanded=False):
                 df = _evidence_to_dataframe(evidence_data)
                 if df is not None:
                     st.dataframe(df, use_container_width=True)
