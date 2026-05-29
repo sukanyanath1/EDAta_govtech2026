@@ -73,7 +73,6 @@ if prompt := st.chat_input("e.g. Should we increase engagement with Vietnam?"):
 
     answer = ""
     evidence_data: dict | None = None
-    plan_data: dict | None = None
 
     with st.chat_message("ai"):
         # ── Live progress steps ────────────────────────────────────────────────
@@ -103,11 +102,11 @@ if prompt := st.chat_input("e.g. Should we increase engagement with Vietnam?"):
                         status_container.write(f"⚙️ {event['text']}")
 
                     elif etype == "plan":
-                        plan_data = event["data"]
+                        plan = event["data"]
                         status_container.write(
-                            f"📋 Plan: **{plan_data.get('task_type')}** | "
-                            f"bundle: `{plan_data.get('indicator_bundle')}` | "
-                            f"years: {plan_data.get('start_year')}–{plan_data.get('end_year')}"
+                            f"📋 Plan: **{plan.get('task_type')}** | "
+                            f"bundle: `{plan.get('indicator_bundle')}` | "
+                            f"years: {plan.get('start_year')}–{plan.get('end_year')}"
                         )
 
                     elif etype == "evidence":
@@ -150,44 +149,6 @@ if prompt := st.chat_input("e.g. Should we increase engagement with Vietnam?"):
                     st.dataframe(df, use_container_width=True)
 
     st.session_state.messages.append(
-        {"role": "ai", "content": answer, "evidence": evidence_data, "plan": plan_data}
+        {"role": "ai", "content": answer, "evidence": evidence_data}
     )
-
-# ── Report generation (after analysis is complete) ─────────────────────────────
-
-def _latest_analysis() -> dict | None:
-    """Find the most recent AI message that has both evidence and a plan."""
-    for msg in reversed(st.session_state.messages):
-        if msg["role"] == "ai" and msg.get("evidence") and msg.get("plan"):
-            return msg
-    return None
-
-
-latest = _latest_analysis()
-if latest:
-    if st.button("📄 Generate HTML Report", key="gen_report"):
-        with st.spinner("Generating report…"):
-            try:
-                resp = requests.post(
-                    f"{BACKEND_URL}/report/html",
-                    json={
-                        "message": st.session_state.messages[-2]["content"]
-                        if len(st.session_state.messages) >= 2
-                        else "",
-                        "answer": latest["content"],
-                        "plan": latest["plan"],
-                        "evidence": latest["evidence"],
-                    },
-                    timeout=120,
-                )
-                resp.raise_for_status()
-                report = resp.json()
-                st.download_button(
-                    label="⬇️ Download Report",
-                    data=report["html"],
-                    file_name=report["filename"],
-                    mime="text/html",
-                )
-            except Exception as exc:  # noqa: BLE001
-                st.error(f"Report generation failed: {exc}")
 
