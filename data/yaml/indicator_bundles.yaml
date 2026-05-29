@@ -1,0 +1,121 @@
+# Switzerland-centric analytical bundles.
+# All Swiss bilateral indicators (SNB, BAZG) reflect CH ↔ partner country data.
+# Bundles are selected automatically by the planner agent based on the user question.
+
+# Full bilateral overview — Switzerland's complete relationship with a country
+ch_bilateral_overview:
+  description: >
+    Comprehensive view of Switzerland's economic relationship with a partner country.
+    Combines the partner's economic profile (IMF) with Swiss bilateral trade (SNB/BAZG).
+    Used for: "Give me a full overview of our relationship with Vietnam",
+              "Prepare a country briefing for Egypt."
+  indicators:
+    # IMF — partner economic profile
+    - NGDP_RPCH
+    - NGDPD
+    - NGDPDPC
+    - PCPIPCH
+    - LUR
+    - GGXWDG_NGDP
+    # World Bank — income level
+    - NY.GNP.PCAP.CD
+    # SNB — Swiss bilateral services trade
+    - bopserva_total
+    - bopserva_share
+    # SNB — Swiss bilateral FDI
+    - fdiausbla_stock
+    - fdiausbla_share
+    # BAZG — Swiss bilateral goods trade
+    - swissimpex_total
+    - swissimpex_share
+    - swissimpex_rank
+
+# Partner economic profile — macroeconomic health of the partner country only
+partner_economic_profile:
+  description: >
+    Macroeconomic overview of a partner country using IMF and World Bank data.
+    Used for: "What is Vietnam's economic situation?",
+              "Is Egypt financially stable?"
+  indicators:
+    - NGDP_RPCH
+    - NGDPD
+    - NGDPDPC
+    - PCPIPCH
+    - LUR
+    - GGXWDG_NGDP
+    - GGXCNL_NGDP
+    - BCA_NGDPD
+    - NY.GNP.PCAP.CD
+
+# Swiss trade partner assessment — goods and services trade focus
+ch_trade_partner_assessment:
+  description: >
+    Assessment of a country as a trade partner for Switzerland.
+    Combines partner economic fundamentals with Swiss bilateral trade data.
+    Used for: "How important is India as a trade partner for Switzerland?",
+              "Should we expand trade with Vietnam?"
+  indicators:
+    # IMF — economic fundamentals
+    - NGDP_RPCH
+    - NGDPD
+    - NGDPDPC
+    - PCPIPCH
+    # SNB — Swiss bilateral services
+    - bopserva_credits
+    - bopserva_debits
+    - bopserva_total
+    - bopserva_share
+    # BAZG — Swiss bilateral goods
+    - swissimpex_exports
+    - swissimpex_imports
+    - swissimpex_total
+    - swissimpex_share
+    - swissimpex_rank
+
+# Swiss investment partner assessment — FDI and economic attractiveness focus
+ch_investment_partner_assessment:
+  description: >
+    Assessment of a country as an investment destination for Switzerland.
+    Combines partner economic stability with Swiss FDI position.
+    Used for: "Should Switzerland increase investment in Nigeria?",
+              "Assess the investment climate in Indonesia."
+  indicators:
+    # IMF — economic stability and risk
+    - NGDP_RPCH
+    - NGDPD
+    - NGDPDPC
+    - PCPIPCH
+    - GGXWDG_NGDP
+    - GGXCNL_NGDP
+    - BCA_NGDPD
+    # World Bank — income level
+    - NY.GNP.PCAP.CD
+    # SNB — Swiss FDI
+    - fdiausbla_stock
+    - fdiausbla_share
+
+# Macro risk — partner country financial vulnerability only
+macro_risk:
+  description: >
+    Macroeconomic risk and vulnerability assessment for a partner country.
+    Used for: "Is Argentina financially vulnerable?",
+              "Assess macro risks in Ghana."
+  indicators:
+    - NGDP_RPCH
+    - PCPIPCH
+    - GGXWDG_NGDP
+    - GGXCNL_NGDP
+    - BCA_NGDPD
+
+# Debt sustainability
+debt_sustainability:
+  description: >
+    Fiscal and external debt sustainability assessment.
+    Used for: "Is Sri Lanka's debt sustainable?",
+              "Review Kenya's debt position."
+  indicators:
+    - NGDP_RPCH
+    - PCPIPCH
+    - GGXWDG_NGDP
+    - GGXCNL_NGDP
+    - BCA_NGDPD

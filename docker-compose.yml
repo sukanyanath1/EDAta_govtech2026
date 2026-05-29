@@ -1,0 +1,36 @@
+# Local development with Docker Compose.
+# Mirrors the Azure Container Apps topology (frontend → backend).
+#
+# Usage:
+#   docker compose up --build          # start both services
+#   docker compose up --build backend  # backend only
+#   docker compose logs -f frontend    # tail logs
+
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile.backend
+    ports:
+      - "8000:8000"
+    env_file: .env          # reads OPENAI_API_KEY, OPENAI_MODEL, ADLS_*, etc.
+    healthcheck:
+      test: ["CMD-SHELL", "python -c \"import urllib.request; urllib.request.urlopen('http://localhost:8000/health')\" || exit 1"]
+      interval: 15s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
+
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile.frontend
+    ports:
+      - "8501:8501"
+    environment:
+      # Override BACKEND_URL so the frontend container reaches the backend container
+      BACKEND_URL: http://backend:8000
+    env_file: .env
+    depends_on:
+      backend:
+        condition: service_healthy

@@ -1,0 +1,70 @@
+# Predefined IMF indicator bundles.
+# Each bundle maps a task type to a list of imf_codes from imf_indicator_catalog.yaml.
+# The agent selects the bundle automatically based on the user's question.
+
+country_profile:
+  description: >
+    General overview of a country's economic health.
+    Used for: "Give me an overview of Kenya", "What is Vietnam's economic profile?"
+  indicators:
+    - NGDP_RPCH
+    - NGDPD
+    - NGDPDPC
+    - PCPIPCH
+    - GGXWDG_NGDP
+    - GGXCNL_NGDP
+    - BCA_NGDPD
+    - LUR
+    - LP
+
+macro_risk:
+  description: >
+    Macroeconomic stability and vulnerability assessment.
+    Used for: "Is Egypt financially stable?", "Assess macro risks in Argentina."
+  indicators:
+    - NGDP_RPCH
+    - PCPIPCH
+    - GGXWDG_NGDP
+    - GGXCNL_NGDP
+    - BCA_NGDPD
+
+trade_potential:
+  description: >
+    Assessment of a country's trade and investment attractiveness.
+    Used for: "Compare India and Indonesia as trade partners",
+              "Should we increase trade with Vietnam?"
+  indicators:
+    - NGDP_RPCH
+    - NGDPD
+    - NGDPDPC
+    - TX_RPCH
+    - TM_RPCH
+    - BCA_NGDPD
+    - LP
+
+debt_sustainability:
+  description: >
+    Assessment of fiscal and external debt vulnerability.
+    Used for: "Is Ghana's debt sustainable?", "Review Sri Lanka's debt position."
+  indicators:
+    - NGDP_RPCH
+    - PCPIPCH
+    - GGXWDG_NGDP
+    - GGXCNL_NGDP
+    - BCA_NGDPD
+
+investment_assessment:
+  description: >
+    Broader economic attractiveness for long-term engagement or investment.
+    Used for: "Should we increase economic engagement with Vietnam?",
+              "Assess the investment climate in Nigeria."
+  indicators:
+    - NGDP_RPCH
+    - NGDPD
+    - NGDPDPC
+    - PCPIPCH
+    - GGXWDG_NGDP
+    - GGXCNL_NGDP
+    - BCA_NGDPD
+    - TX_RPCH
+    - LUR

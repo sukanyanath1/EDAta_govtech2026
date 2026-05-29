@@ -1,0 +1,248 @@
+# Country aliases: plain names / variants → IMF ISO Alpha-3 codes
+aliases:
+  # A
+  afghanistan: AFG
+  albania: ALB
+  algeria: DZA
+  angola: AGO
+  argentina: ARG
+  armenia: ARM
+  australia: AUS
+  austria: AUT
+  azerbaijan: AZE
+  # B
+  bahrain: BHR
+  bangladesh: BGD
+  belgium: BEL
+  bolivia: BOL
+  bosnia: BIH
+  brazil: BRA
+  bulgaria: BGR
+  # C
+  cambodia: KHM
+  cameroon: CMR
+  canada: CAN
+  chile: CHL
+  china: CHN
+  prc: CHN
+  colombia: COL
+  congo: COD
+  croatia: HRV
+  czechia: CZE
+  czech republic: CZE
+  # D
+  denmark: DNK
+  # E
+  ecuador: ECU
+  egypt: EGY
+  ethiopia: ETH
+  # F
+  finland: FIN
+  france: FRA
+  # G
+  georgia: GEO
+  germany: DEU
+  ghana: GHA
+  greece: GRC
+  guatemala: GTM
+  # H
+  hungary: HUN
+  # I
+  india: IND
+  indonesia: IDN
+  iran: IRN
+  iraq: IRQ
+  ireland: IRL
+  israel: ISR
+  italy: ITA
+  ivory coast: CIV
+  cote d ivoire: CIV
+  # J
+  japan: JPN
+  jordan: JOR
+  # K
+  kazakhstan: KAZ
+  kenya: KEN
+  kuwait: KWT
+  # L
+  laos: LAO
+  lebanon: LBN
+  # M
+  malaysia: MYS
+  mexico: MEX
+  morocco: MAR
+  mozambique: MOZ
+  myanmar: MMR
+  burma: MMR
+  # N
+  nepal: NPL
+  netherlands: NLD
+  new zealand: NZL
+  nigeria: NGA
+  norway: NOR
+  # O
+  oman: OMN
+  # P
+  pakistan: PAK
+  peru: PER
+  philippines: PHL
+  poland: POL
+  portugal: PRT
+  # Q
+  qatar: QAT
+  # R
+  romania: ROU
+  russia: RUS
+  # S
+  saudi arabia: SAU
+  senegal: SEN
+  singapore: SGP
+  slovakia: SVK
+  south africa: ZAF
+  south korea: KOR
+  korea: KOR
+  spain: ESP
+  sri lanka: LKA
+  sweden: SWE
+  switzerland: CHE
+  # T
+  taiwan: TWN
+  tanzania: TZA
+  thailand: THA
+  tunisia: TUN
+  turkey: TUR
+  turkiye: TUR
+  # U
+  uganda: UGA
+  ukraine: UKR
+  united arab emirates: ARE
+  uae: ARE
+  united kingdom: GBR
+  uk: GBR
+  united states: USA
+  us: USA
+  usa: USA
+  # V
+  venezuela: VEN
+  vietnam: VNM
+  viet nam: VNM
+  # Z
+  zambia: ZMB
+  zimbabwe: ZWE
+
+# Region groups: plain name → list of ISO Alpha-3 codes
+regions:
+  asean:
+    - BRN
+    - KHM
+    - IDN
+    - LAO
+    - MYS
+    - MMR
+    - PHL
+    - SGP
+    - THA
+    - VNM
+  asean5:
+    - IDN
+    - MYS
+    - PHL
+    - THA
+    - VNM
+  brics:
+    - BRA
+    - RUS
+    - IND
+    - CHN
+    - ZAF
+  brics_plus:
+    - BRA
+    - RUS
+    - IND
+    - CHN
+    - ZAF
+    - EGY
+    - ETH
+    - IRN
+    - SAU
+    - ARE
+  dach:
+    - DEU
+    - AUT
+    - CHE
+  g7:
+    - CAN
+    - FRA
+    - DEU
+    - ITA
+    - JPN
+    - GBR
+    - USA
+  g20:
+    - ARG
+    - AUS
+    - BRA
+    - CAN
+    - CHN
+    - FRA
+    - DEU
+    - IND
+    - IDN
+    - ITA
+    - JPN
+    - KOR
+    - MEX
+    - RUS
+    - SAU
+    - ZAF
+    - TUR
+    - GBR
+    - USA
+  gulf:
+    - BHR
+    - KWT
+    - OMN
+    - QAT
+    - SAU
+    - ARE
+  gcc: &gcc
+    - BHR
+    - KWT
+    - OMN
+    - QAT
+    - SAU
+    - ARE
+  south_asia:
+    - AFG
+    - BGD
+    - IND
+    - NPL
+    - PAK
+    - LKA
+  southeast_asia:
+    - BRN
+    - KHM
+    - IDN
+    - LAO
+    - MYS
+    - MMR
+    - PHL
+    - SGP
+    - THA
+    - VNM
+  sub_saharan_africa:
+    - AGO
+    - CMR
+    - COD
+    - CIV
+    - ETH
+    - GHA
+    - KEN
+    - MOZ
+    - NGA
+    - SEN
+    - ZAF
+    - TZA
+    - UGA
+    - ZMB
+    - ZWE
