@@ -190,62 +190,134 @@ curl -X POST http://localhost:8000/chat \
 
 ---
 
-# IMF data 
-Data Source : [IMF Data](https://data.imf.org/en/datasets/IMF.RES:WEO)
-
-# Importing IMF Data
-
-To download IMF GDP growth data and save it to `data/imf/`:
-
-```bash
-make download_imf_data
-```
-
-> **Note:** Country codes and indicators are currently hardcoded inside `scripts/download_imf_data.py`.
-> Edit the `country_code_list` and `indicator_list` variables in `main()` before running.
-> CLI parameters will be added tomorrow.
-
-```python
-# scripts/download_imf_data.py — edit these lines:
-country_code_list = ["DEU"]       # e.g. "USA", "SGP", "FRA"
-indicator_list    = ["NGDP_RPCH"] # IMF indicator code
-```
-
-IMF country codes follow the ISO Alpha-3 standard. A full list is available at [IMF DataMapper](https://www.imf.org/external/datamapper/api/v1/countries).
-
----
-
 # Architecture
 
-Every user question flows through a deterministic four-stage pipeline before any LLM synthesis occurs:
+```mermaid
+flowchart TD
+    User(["👤 Swiss Diplomat\n(Streamlit UI)"])
 
-```
-User question
-     ↓
-1. Planner agent        — extracts countries (ISO codes), bundle, year range
-     ↓
-2. Indicator resolver   — maps the bundle to a list of indicator codes
-     ↓
-3. Evidence layer       — fetches from IMF / World Bank / SNB / WTO, builds evidence pack
-     ↓
-4. Analysis agent       — reads evidence pack, writes a Switzerland-perspective briefing
+    subgraph Frontend["Frontend — Streamlit"]
+        UI["Chat Interface\napp.py"]
+        UI_Steps["Live Progress Steps\n(step / plan / evidence events)"]
+        UI_Table["📊 Source Data Table\n(all sources, with Source column)"]
+        UI_Answer["📝 Diplomatic Briefing"]
+    end
+
+    subgraph Backend["Backend — FastAPI"]
+        API["/chat/stream\nSSE endpoint"]
+
+        subgraph Pipeline["4-Stage Pipeline (agent_factory.py)"]
+            S1["① Planner Agent\nLLM call #1\n→ extracts countries, bundle,\nyear range, task type"]
+            S2["② Bundle Resolver\nindicator_catalog_service\n→ maps bundle → indicator codes"]
+            S3["③ Evidence Builder\nevidence_builder.py\n→ concurrent fetch across all sources"]
+            S4["④ Analysis Agent\nLLM call #2\n→ reads evidence pack,\nwrites briefing"]
+        end
+    end
+
+    subgraph Sources["Data Sources"]
+        IMF["🏦 IMF DataMapper\nGDP, inflation, debt,\nunemployment, growth"]
+        WB["🌐 World Bank\nGNI per capita\nincome category"]
+        SNB_S["🇨🇭 SNB — bopserva\nCH bilateral services trade\n(credits / debits / total / share)"]
+        SNB_F["🇨🇭 SNB — fdiausbla\nCH direct investment abroad\n(stock / country share)"]
+        WTO["📋 WTO Timeseries API\nCH services exports & imports\n(BAT_BV_X / BAT_BV_M)"]
+    end
+
+    subgraph Bundles["Analytical Bundles (indicator_bundles.yaml)"]
+        B1["ch_bilateral_overview\nFull CH relationship picture"]
+        B2["ch_trade_partner_assessment\nTrade relevance to CH"]
+        B3["ch_trade_balance_assessment\nCH bilateral trade balance"]
+        B4["ch_investment_partner_assessment\nFDI attractiveness for CH"]
+        B5["partner_economic_profile\nPartner macro health only"]
+        B6["macro_risk\nFinancial vulnerability"]
+        B7["debt_sustainability\nFiscal & debt trajectory"]
+    end
+
+    subgraph Resolver["Country Resolver"]
+        CR["country_resolver.py\nNames / aliases → ISO Alpha-3\nRegion expansion:\nASEAN → 10 codes\nBRICS, G7, Gulf, DACH…"]
+    end
+
+    User -->|"question"| UI
+    UI -->|"POST /chat/stream"| API
+    API --> S1
+    S1 -->|"AnalysisPlan"| S2
+    S1 --> CR
+    CR -->|"ISO codes"| S3
+    S2 -->|"indicator codes"| S3
+    S3 -->|"EvidencePack"| S4
+    S4 -->|"SSE: answer"| API
+    API -->|"SSE stream"| UI
+
+    S2 -.->|"selects bundle"| Bundles
+    S3 -->|"source=IMF"| IMF
+    S3 -->|"source=World Bank"| WB
+    S3 -->|"source=SNB bopserva"| SNB_S
+    S3 -->|"source=SNB fdiausbla"| SNB_F
+    S3 -->|"source=WTO"| WTO
+
+    UI --> UI_Steps
+    UI --> UI_Table
+    UI --> UI_Answer
 ```
 
 The LLM never calls any API directly and never sees raw HTTP responses. It only reads the structured evidence pack when writing the final answer.
 
-**Data sources:**
+---
 
-| Level | Source | Data |
+## Data Sources & Indicators
+
+### Level 1 — Partner Country Economics
+
+| Indicator | Code | Source | Unit | Used in |
+|---|---|---|---|---|
+| Real GDP growth | `NGDP_RPCH` | [IMF DataMapper](https://data.imf.org/en/datasets/IMF.RES:WEO) | % change | All bundles |
+| GDP, current prices | `NGDPD` | IMF DataMapper | Billions USD | All bundles |
+| GDP per capita | `NGDPDPC` | IMF DataMapper | USD per person | All bundles |
+| Inflation, avg consumer prices | `PCPIPCH` | IMF DataMapper | % change | Most bundles |
+| Unemployment rate | `LUR` | IMF DataMapper | % of labour force | bilateral_overview, economic_profile |
+| Government gross debt | `GGXWDG_NGDP` | IMF DataMapper | % of GDP | Most bundles |
+| Fiscal balance | `GGXCNL_NGDP` | IMF DataMapper | % of GDP | investment, economic_profile |
+| Current account balance | `BCA_NGDPD` | IMF DataMapper | % of GDP | investment, economic_profile |
+| GNI per capita (Atlas) | `NY.GNP.PCAP.CD` | [World Bank API v2](https://datahelpdesk.worldbank.org/knowledgebase/articles/898590) | Current USD | bilateral_overview, economic_profile |
+
+> IMF data covers 2015–2027 (includes WEO forecasts). Country codes follow ISO Alpha-3.
+
+### Level 2 — Switzerland Bilateral Services Trade
+
+| Indicator | Code | Source | Unit | Used in |
+|---|---|---|---|---|
+| CH services trade receipts (credits) | `bopserva_credits` | [SNB — bopserva cube](https://data.snb.ch/en/topics/aub/chart/bopserva) | Millions CHF | trade_assessment |
+| CH services trade payments (debits) | `bopserva_debits` | SNB — bopserva | Millions CHF | trade_assessment |
+| CH services trade total | `bopserva_total` | SNB — bopserva | Millions CHF | trade_assessment, bilateral_overview |
+| Partner share of CH services trade | `bopserva_share` | SNB — bopserva | % | trade_assessment, bilateral_overview |
+| CH services exports (WTO BaTiS) | `BAT_BV_X` | [WTO Timeseries API](https://timeseries.wto.org/) | Million USD | trade_assessment, bilateral_overview |
+| CH services imports (WTO BaTiS) | `BAT_BV_M` | WTO Timeseries API | Million USD | trade_assessment, bilateral_overview |
+
+### Level 3 — Switzerland Direct Investment Abroad
+
+| Indicator | Code | Source | Unit | Used in |
+|---|---|---|---|---|
+| Swiss FDI stock in partner country | `fdiausbla_stock` | [SNB — fdiausbla cube](https://data.snb.ch/en/topics/aub/chart/fdiausbla) | Millions CHF | investment_assessment, bilateral_overview |
+| Partner share of total Swiss FDI | `fdiausbla_share` | SNB — fdiausbla | % | investment_assessment, bilateral_overview |
+
+---
+
+## Analytical Bundles
+
+The planner agent automatically selects the most appropriate bundle based on the question:
+
+| Bundle | Planner selects when… | Sources used |
 |---|---|---|
-| L1 | IMF DataMapper | Partner country macroeconomic indicators (GDP, inflation, debt, etc.) |
-| L1 | World Bank | GNI per capita / income category |
-| L1 | WIPO | Global Innovation Index rank (static, loaded from ADLS) |
-| L1 | WTO Timeseries | Switzerland's services trade indicators (Million US dollar) |
-| L2 | SNB — `bopserva` | Switzerland's bilateral services trade (credits, debits, total, share) |
-| L3 | SNB — `fdiausbla` | Switzerland's direct investment abroad (stock, country share) |
+| `ch_bilateral_overview` | "Tell me about Vietnam" / "Overview of India" | IMF + World Bank + SNB (services + FDI) + WTO |
+| `ch_trade_partner_assessment` | "How important is India as a trade partner?" | IMF + SNB (services) + WTO |
+| `ch_trade_balance_assessment` | "What is the trade balance with the US?" | WTO (BAT_BV_X / BAT_BV_M) |
+| `ch_investment_partner_assessment` | "Investment climate in Indonesia?" | IMF + World Bank + SNB (FDI) |
+| `partner_economic_profile` | "Is Egypt financially stable?" | IMF + World Bank |
+| `macro_risk` | "Is Argentina vulnerable?" | IMF |
+| `debt_sustainability` | "Assess Kenya's debt" | IMF |
 
+---
 
-**Project structure:**
+## Project Structure
 
 ```
 app/v1/
@@ -259,10 +331,9 @@ app/v1/
     imf_client.py                 — HTTP client for IMF DataMapper REST API
     worldbank_client.py           — HTTP client for World Bank REST API v2
     snb_client.py                 — HTTP client for SNB cube API (bopserva, fdiausbla)
-    wto_client.py                 — WTO Timeseries API client (set WTO_SUBSCRIPTION_KEY)
+    wto_client.py                 — WTO Timeseries API client (requires WTO_SUBSCRIPTION_KEY)
     evidence_builder.py           — routes each indicator to its source client, returns EvidencePack
   tools/
-    imf_tools.py          — semantic LangChain tools
     adls_tools.py         — Azure Data Lake tools (list, read, write, delete files)
   schemas/
     planning.py           — AnalysisPlan Pydantic model
@@ -271,33 +342,14 @@ app/v1/
   main.py                 — FastAPI; exposes /chat (blocking) and /chat/stream (SSE)
 
 data/yaml/
-  indicator_catalog.yaml   — 19 curated indicators across all four sources
-  indicator_bundles.yaml   — 6 analytical bundles (Switzerland-centric)
+  indicator_catalog.yaml   — all indicators with source routing metadata
+  indicator_bundles.yaml   — 7 analytical bundles (Switzerland-centric)
   country_groups.yaml      — 80+ country aliases + 10 region groups
 
 frontend/
   app.py      — Streamlit chat UI; consumes SSE stream, shows steps + evidence table
   config.py   — frontend settings (BACKEND_URL)
 ```
-
-**Indicator bundles:**
-
-| Bundle | Use when | Data sources |
-|---|---|---|
-| `ch_bilateral_overview` | Full bilateral picture of any country | IMF + World Bank + SNB  |
-| `ch_trade_partner_assessment` | Trade relevance to Switzerland | IMF + SNB services |
-| `ch_investment_partner_assessment` | FDI attractiveness for Switzerland | IMF + World Bank + SNB FDI |
-| `partner_economic_profile` | Partner macro health only | IMF + World Bank |
-| `macro_risk` | Financial vulnerability of partner | IMF |
-| `debt_sustainability` | Fiscal and debt trajectory | IMF |
-
-**Agents:**
-
-| Agent | File | Role |
-|---|---|---|
-| Planner | `agents/planner_agent.py` | Extracts `task_type`, countries (ISO codes), bundle, and year range from the user question. No API calls. |
-| Analysis | `agents/analysis_agent.py` | Reads evidence pack and writes a Switzerland-perspective diplomatic briefing. No API calls. |
-| Factory | `agents/agent_factory.py` | Orchestrates the full pipeline. Emits SSE events: `step`, `plan`, `evidence`, `answer`, `error`, `done`. |
 
 ---
 
@@ -361,8 +413,4 @@ Uses `debt_sustainability`. GDP growth trajectory against debt-to-GDP, deficit, 
 The country resolver expands region names (e.g. `asean` → 10 ISO codes, `brics`, `g7`, `gulf`, `dach`) automatically.
 
 ---
-
-# Data
-
-If you add a new dataset, please add it to the topic folder (might not exist yet) and add an entry to the data-catalog.md (see previous as an example)
 
