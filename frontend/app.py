@@ -42,24 +42,6 @@ with col2:
     st.markdown("# AIDA — AI Diplomatic Assistant")
     st.markdown("<p class='eda-caption'>Ask a diplomatic or economic question. The agent retrieves live data and writes a briefing.</p>", unsafe_allow_html=True)
 
-# CSS to vertically center the chat input (fixed, centered overlay)
-st.markdown(
-    """
-    <style>
-    [data-testid="stChatInput"] { 
-      position: fixed !important; 
-      top: 55% !important; 
-      left: 50% !important; 
-      transform: translate(-50%, -50%) !important; 
-      width: 60% !important; 
-      max-width: 900px !important; 
-      z-index: 9999 !important;
-    }
-    </style>
-    """,
-    unsafe_allow_html=True,
-)
-
 # ── Session state ──────────────────────────────────────────────────────────────
 
 if "messages" not in st.session_state:
