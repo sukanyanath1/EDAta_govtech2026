@@ -1,194 +1,10 @@
-# Gov Tech Hackathon - EDAtaBot
+# Gov Tech Hackathon - AIDA
 
-EDAta is a **Switzerland-centric diplomatic economic intelligence agent** for Swiss diplomats.
-It answers questions about partner countries and bilateral relationships by combining live data from the IMF, World Bank, SNB (Swiss National Bank), and WTO Timeseries into a structured evidence pack, then synthesises a concise diplomatic briefing.
+IDA is **AI Diplomatic Assistant** for Swiss diplomats.that answers economic and bilateral questions from a Swiss perspective by fetching live data from IMF, World Bank, SNB, and WTO APIs. It runs every question through a four-stage pipeline — planner, bundle resolver, evidence builder, and analysis agent — ensuring the LLM only synthesises answers from verified structured data, never raw API responses. The result is a concise diplomatic briefing with a source-labelled evidence table, covering macro risk, trade, FDI, and bilateral overviews for any country or region worldwide.
 
-Switzerland is always the reference country. Bilateral data (services trade, FDI, goods trade) always reflects Switzerland's relationship with the partner.
 
 ---
 
-# Setup
-
-## Configure the Python environment
-<details>
-<summary>Click to expand</summary>
-
-- Install `uv`: 
-
-```bash
-pip install uv==0.8.14
-```
-
-- Create virtual environment: 
-```bash
-uv venv .venv --python 3.12.11
-```
-
-- Activate with: 
-```bash
-source .venv/Scripts/activate
-```
-
-- Install the libraries (including dev): 
-```bash
-uv pip install -r pyproject.toml
-
-- Install pre-commit: 
-```bash
-pre-commit install
-```
-
-- Adding the environment file
-Copy the `env.example` file into `.env` file. Fill in the environment variables.
-
-</details>
-
-## Make Commands
-
-| Command | Description |
-|---|---|
-| `make run-backend` | Start the FastAPI agent server on `http://localhost:8000` |
-| `make run-frontend` | Start the Streamlit chat UI on `http://localhost:8501` |
-| `make run` | Start both backend and frontend simultaneously |
-| `make download_imf_data` | Download IMF GDP growth data to `data/imf/` |
-| `make docker-build` | Build both Docker images locally |
-| `make docker-run` | Build and start both containers via Docker Compose |
-| `make docker-down` | Stop and remove containers |
-| `make deploy-azure` | Build images locally, push to ACR, deploy to Azure Container Apps (`switzerlandnorth`) |
-
----
-
-## Running locally (Python)
-
-**Backend only:**
-
-```bash
-make run-backend
-```
-
-**Frontend only** (requires backend already running):
-
-```bash
-make run-frontend
-```
-
-**Both at once:**
-
-```bash
-make run
-```
-
-- Backend API + docs: `http://localhost:8000/docs`
-- Chat UI: `http://localhost:8501`
-
----
-
-## Running locally (Docker)
-
-Requires Docker Desktop. Mirrors the Azure topology exactly.
-
-```bash
-make docker-run
-```
-
-This builds both images and starts:
-- Frontend → `http://localhost:8501`
-- Backend → `http://localhost:8000`
-
-The frontend container automatically points to the backend container via Docker's internal network (`http://backend:8000`). Your `.env` file is used for all secrets — it is never baked into the image.
-
-To stop:
-
-```bash
-make docker-down
-```
-
----
-
-## Deploying to Azure (Container Apps)
-
-Hosted on **Azure Container Apps** in `switzerlandnorth`. The backend runs with internal ingress (not reachable from the internet directly); only the Streamlit frontend is public. Secrets are stored in Container Apps and injected at runtime.
-
-### Prerequisites
-
-```bash
-# One-time setup
-az login
-az extension add --name containerapp --upgrade
-```
-
-### Deploy
-
-Requires Docker Desktop. The script reads secrets directly from your `.env` file — no manual `export` needed. Fully idempotent — safe to run again to redeploy after code changes.
-
-```bash
-make deploy-azure
-```
-
-The script will:
-1. Register required Azure resource providers (one-time, no-op thereafter)
-2. Create a resource group (`edatademo-rg`) in `switzerlandnorth` if not present.
-3. Create an Azure Container Registry if not present, build both images locally, and push them
-4. Create a Container Apps environment
-5. Deploy the **backend** with internal ingress (port 8000)
-6. Deploy the **frontend** with external ingress (port 8501), wired to the backend URL
-7. Print the public demo URL
-
-### Tear down after the demo
-
-```bash
-az group delete --name edatademo-rg --yes --no-wait
-```
-
----
-
-**Both at once:**
-
-## API Reference
-
-### Health check
-
-```bash
-curl http://localhost:8000/health
-```
-
-```json
-{"status": "ok"}
-```
-
----
-
-# Chat with the agent
-
-**Single turn:**
-
-```bash
-curl -X POST http://localhost:8000/chat \
-  -H "Content-Type: application/json" \
-  -d '{"message": "List all files in the raw/ directory"}'
-```
-
-**Multi-turn (pass prior history):**
-
-```bash
-curl -X POST http://localhost:8000/chat \
-  -H "Content-Type: application/json" \
-  -d '{
-    "message": "Now read the first file you found",
-    "history": [
-      {"role": "human", "content": "List all files in the raw/ directory"},
-      {"role": "ai",    "content": "I found the following files: raw/data.csv"}
-    ]
-  }'
-```
-
-**Response shape:**
-
-```json
-{"response": "<agent answer>"}
-```
-
----
 
 # Architecture
 
@@ -414,3 +230,187 @@ The country resolver expands region names (e.g. `asean` → 10 ISO codes, `brics
 
 ---
 
+
+
+# Setup
+
+## Configure the Python environment
+<details>
+<summary>Click to expand</summary>
+
+- Install `uv`: 
+
+```bash
+pip install uv==0.8.14
+```
+
+- Create virtual environment: 
+```bash
+uv venv .venv --python 3.12.11
+```
+
+- Activate with: 
+```bash
+source .venv/Scripts/activate
+```
+
+- Install the libraries (including dev): 
+```bash
+uv pip install -r pyproject.toml
+
+- Install pre-commit: 
+```bash
+pre-commit install
+```
+
+- Adding the environment file
+Copy the `env.example` file into `.env` file. Fill in the environment variables.
+
+</details>
+
+## Make Commands
+
+| Command | Description |
+|---|---|
+| `make run-backend` | Start the FastAPI agent server on `http://localhost:8000` |
+| `make run-frontend` | Start the Streamlit chat UI on `http://localhost:8501` |
+| `make run` | Start both backend and frontend simultaneously |
+| `make download_imf_data` | Download IMF GDP growth data to `data/imf/` |
+| `make docker-build` | Build both Docker images locally |
+| `make docker-run` | Build and start both containers via Docker Compose |
+| `make docker-down` | Stop and remove containers |
+| `make deploy-azure` | Build images locally, push to ACR, deploy to Azure Container Apps (`switzerlandnorth`) |
+
+---
+
+## Running locally (Python)
+
+**Backend only:**
+
+```bash
+make run-backend
+```
+
+**Frontend only** (requires backend already running):
+
+```bash
+make run-frontend
+```
+
+**Both at once:**
+
+```bash
+make run
+```
+
+- Backend API + docs: `http://localhost:8000/docs`
+- Chat UI: `http://localhost:8501`
+
+---
+
+## Running locally (Docker)
+
+Requires Docker Desktop. Mirrors the Azure topology exactly.
+
+```bash
+make docker-run
+```
+
+This builds both images and starts:
+- Frontend → `http://localhost:8501`
+- Backend → `http://localhost:8000`
+
+The frontend container automatically points to the backend container via Docker's internal network (`http://backend:8000`). Your `.env` file is used for all secrets — it is never baked into the image.
+
+To stop:
+
+```bash
+make docker-down
+```
+
+---
+
+## Deploying to Azure (Container Apps)
+
+Hosted on **Azure Container Apps** in `switzerlandnorth`. The backend runs with internal ingress (not reachable from the internet directly); only the Streamlit frontend is public. Secrets are stored in Container Apps and injected at runtime.
+
+### Prerequisites
+
+```bash
+# One-time setup
+az login
+az extension add --name containerapp --upgrade
+```
+
+### Deploy
+
+Requires Docker Desktop. The script reads secrets directly from your `.env` file — no manual `export` needed. Fully idempotent — safe to run again to redeploy after code changes.
+
+```bash
+make deploy-azure
+```
+
+The script will:
+1. Register required Azure resource providers (one-time, no-op thereafter)
+2. Create a resource group (`edatademo-rg`) in `switzerlandnorth` if not present.
+3. Create an Azure Container Registry if not present, build both images locally, and push them
+4. Create a Container Apps environment
+5. Deploy the **backend** with internal ingress (port 8000)
+6. Deploy the **frontend** with external ingress (port 8501), wired to the backend URL
+7. Print the public demo URL
+
+### Tear down after the demo
+
+```bash
+az group delete --name edatademo-rg --yes --no-wait
+```
+
+---
+
+**Both at once:**
+
+## API Reference
+
+### Health check
+
+```bash
+curl http://localhost:8000/health
+```
+
+```json
+{"status": "ok"}
+```
+
+---
+
+# Chat with the agent
+
+**Single turn:**
+
+```bash
+curl -X POST http://localhost:8000/chat \
+  -H "Content-Type: application/json" \
+  -d '{"message": "List all files in the raw/ directory"}'
+```
+
+**Multi-turn (pass prior history):**
+
+```bash
+curl -X POST http://localhost:8000/chat \
+  -H "Content-Type: application/json" \
+  -d '{
+    "message": "Now read the first file you found",
+    "history": [
+      {"role": "human", "content": "List all files in the raw/ directory"},
+      {"role": "ai",    "content": "I found the following files: raw/data.csv"}
+    ]
+  }'
+```
+
+**Response shape:**
+
+```json
+{"response": "<agent answer>"}
+```
+
+---
