@@ -40,6 +40,7 @@ def _evidence_to_dataframe(evidence: dict) -> pd.DataFrame | None:
         base = {
             "Country": rec.get("country_name", rec["country_code"]),
             "Indicator": rec.get("indicator_name", rec["indicator_code"]),
+            "Source": rec.get("source", ""),
             "Unit": rec.get("unit", ""),
         }
         base.update(rec.get("values", {}))
@@ -143,7 +144,7 @@ if prompt := st.chat_input("e.g. Should we increase engagement with Vietnam?"):
 
         # ── Source data expander ───────────────────────────────────────────────
         if evidence_data:
-            with st.expander("📊 View source data (IMF)", expanded=False):
+            with st.expander("📊 View source data", expanded=False):
                 df = _evidence_to_dataframe(evidence_data)
                 if df is not None:
                     st.dataframe(df, use_container_width=True)
