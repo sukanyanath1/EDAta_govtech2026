@@ -22,15 +22,12 @@ ch_bilateral_overview:
     # SNB — Swiss bilateral services trade
     - bopserva_total
     - bopserva_share
-    # WTO — additional services and goods trade series (USD)
+    # WTO — additional services trade series (USD)
     - BAT_BV_X
     - BAT_BV_M
     # SNB — Swiss bilateral FDI
     - fdiausbla_stock
     - fdiausbla_share
-    # WTO — additional annual merchandise trade values (USD)
-    - ITS_MTV_AX
-    - ITS_MTV_AM
 
 # Partner economic profile — macroeconomic health of the partner country only
 partner_economic_profile:
@@ -49,7 +46,7 @@ partner_economic_profile:
     - BCA_NGDPD
     - NY.GNP.PCAP.CD
 
-# Swiss trade partner assessment — goods and services trade focus
+# Swiss trade partner assessment — services trade focus
 ch_trade_partner_assessment:
   description: >
     Assessment of a country as a trade partner for Switzerland.
@@ -69,24 +66,18 @@ ch_trade_partner_assessment:
     # WTO — services (balanced values)
     - BAT_BV_X
     - BAT_BV_M
-    # WTO — merchandise values
-    - ITS_MTV_AX
-    - ITS_MTV_AM
 
-# Swiss trade balance assessment — explicit goods vs services framing
+# Swiss trade balance assessment — services trade framing
 ch_trade_balance_assessment:
   description: >
     Assessment of Switzerland's bilateral trade balance narrative with a partner country,
-    explicitly separating goods from services, using WTO indicators only.
-    Used for: "What is the trade statistics with the US in goods and in services?",
-              "Give me arguments that we should not judge the US relationship on goods only."
+    using WTO services indicators only.
+    Used for: "What are Switzerland's services trade statistics with the US?",
+              "Give me arguments based on services trade dynamics."
   indicators:
     # WTO — services (balanced values)
     - BAT_BV_X
     - BAT_BV_M
-    # WTO — merchandise values
-    - ITS_MTV_AX
-    - ITS_MTV_AM
 
 # Swiss investment partner assessment — FDI and economic attractiveness focus
 ch_investment_partner_assessment:

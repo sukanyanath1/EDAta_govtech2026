@@ -240,7 +240,7 @@ The LLM never calls any API directly and never sees raw HTTP responses. It only 
 | L1 | IMF DataMapper | Partner country macroeconomic indicators (GDP, inflation, debt, etc.) |
 | L1 | World Bank | GNI per capita / income category |
 | L1 | WIPO | Global Innovation Index rank (static, loaded from ADLS) |
-| L1 | WTO Timeseries | Switzerland's services and goods trade indicators (Million US dollar) |
+| L1 | WTO Timeseries | Switzerland's services trade indicators (Million US dollar) |
 | L2 | SNB — `bopserva` | Switzerland's bilateral services trade (credits, debits, total, share) |
 | L3 | SNB — `fdiausbla` | Switzerland's direct investment abroad (stock, country share) |
 
@@ -271,7 +271,7 @@ app/v1/
   main.py                 — FastAPI; exposes /chat (blocking) and /chat/stream (SSE)
 
 data/yaml/
-  indicator_catalog.yaml   — 21 curated indicators across all four sources
+  indicator_catalog.yaml   — 19 curated indicators across all four sources
   indicator_bundles.yaml   — 6 analytical bundles (Switzerland-centric)
   country_groups.yaml      — 80+ country aliases + 10 region groups
 

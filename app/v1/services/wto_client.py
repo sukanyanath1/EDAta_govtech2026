@@ -1,4 +1,4 @@
-"""HTTP client for the WTO Timeseries API (Switzerland-focused trade indicators)."""
+"""HTTP client for the WTO Timeseries API (Switzerland-focused services indicators)."""
 
 from __future__ import annotations
 
@@ -14,11 +14,10 @@ _BASE_URL = "https://api.wto.org/timeseries/v1/data"
 _TIMEOUT = 45
 _MIN_SECONDS_BETWEEN_REQUESTS = 1.0
 _REPORTER_CODE = "756"  # Switzerland
+_SUPPORTED_INDICATORS = {"BAT_BV_X", "BAT_BV_M"}
 _TOTAL_PRODUCT_CODE_BY_INDICATOR = {
     "BAT_BV_X": "S",   # Services total in BaTiS
     "BAT_BV_M": "S",   # Services total in BaTiS
-    "ITS_MTV_AX": "TO",  # Total merchandise
-    "ITS_MTV_AM": "TO",  # Total merchandise
 }
 
 
@@ -92,6 +91,16 @@ def get_indicator_for_countries(
     The WTO endpoint expects query parameters:
       i=<indicator>, r=756 (Switzerland), p=<partner_numeric_code>
     """
+    if indicator not in _SUPPORTED_INDICATORS:
+        return [
+            {
+                "country_code": c,
+                "indicator_code": indicator,
+                "error": f"Unsupported WTO indicator: {indicator} (services indicators only)",
+            }
+            for c in country_codes
+        ]
+
     key = settings.wto_subscription_key
     if key is None:
         return [
@@ -151,20 +160,11 @@ def get_indicator_for_countries(
 
         dataset = payload.get("Dataset") or []
         if not dataset:
-            # WTO merchandise indicators can return only world aggregates (p=000)
-            # for some reporters/partners, so call this out explicitly.
-            if indicator in {"ITS_MTV_AX", "ITS_MTV_AM"} and partner_code != "000":
-                error_msg = (
-                    "No WTO partner-level goods data returned for this partner "
-                    "(indicator currently available as world aggregate only)."
-                )
-            else:
-                error_msg = "No WTO data returned for this partner/indicator"
             rows.append(
                 {
                     "country_code": country_code,
                     "indicator_code": indicator,
-                    "error": error_msg,
+                    "error": "No WTO data returned for this partner/indicator",
                 }
             )
             continue

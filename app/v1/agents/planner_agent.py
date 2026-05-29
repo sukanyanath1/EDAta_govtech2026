@@ -26,9 +26,8 @@ Available bundles (choose the most appropriate one):
 Bundle selection guide:
 - ch_bilateral_overview    → full picture: "Tell me about Vietnam" / "Overview of India"
 - ch_trade_partner_assessment → trade focus: "How important is India as a trade partner?"
-- ch_trade_balance_assessment → explicit goods-vs-services framing: trade deficit,
-                                bilateral goods vs services statistics, or arguments
-                                that services must be counted alongside goods
+- ch_trade_balance_assessment → services-trade balance framing: bilateral services
+                                exports/imports and services-based trade arguments
 - ch_investment_partner_assessment → FDI focus: "Investment climate in Indonesia?"
 - partner_economic_profile → partner macro only: "Is Egypt financially stable?"
 - macro_risk               → risk focus: "Is Argentina vulnerable?"
