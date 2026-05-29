@@ -1,12 +1,12 @@
 # Switzerland-centric analytical bundles.
-# All Swiss bilateral indicators (SNB, BAZG) reflect CH ↔ partner country data.
+# All Swiss bilateral indicators (SNB) reflect CH ↔ partner country data.
 # Bundles are selected automatically by the planner agent based on the user question.
 
 # Full bilateral overview — Switzerland's complete relationship with a country
 ch_bilateral_overview:
   description: >
     Comprehensive view of Switzerland's economic relationship with a partner country.
-    Combines the partner's economic profile (IMF) with Swiss bilateral trade (SNB/BAZG).
+    Combines the partner's economic profile (IMF) with Swiss bilateral trade (SNB).
     Used for: "Give me a full overview of our relationship with Vietnam",
               "Prepare a country briefing for Egypt."
   indicators:
@@ -28,10 +28,6 @@ ch_bilateral_overview:
     # SNB — Swiss bilateral FDI
     - fdiausbla_stock
     - fdiausbla_share
-    # BAZG — Swiss bilateral goods trade
-    - swissimpex_total
-    - swissimpex_share
-    - swissimpex_rank
     # WTO — additional annual merchandise trade values (USD)
     - ITS_MTV_AX
     - ITS_MTV_AM
@@ -57,7 +53,6 @@ partner_economic_profile:
 ch_trade_partner_assessment:
   description: >
     Assessment of a country as a trade partner for Switzerland.
-    Combines partner economic fundamentals with Swiss bilateral trade data.
     Used for: "How important is India as a trade partner for Switzerland?",
               "Should we expand trade with Vietnam?"
   indicators:
@@ -74,12 +69,21 @@ ch_trade_partner_assessment:
     # WTO — services (balanced values)
     - BAT_BV_X
     - BAT_BV_M
-    # BAZG — Swiss bilateral goods
-    - swissimpex_exports
-    - swissimpex_imports
-    - swissimpex_total
-    - swissimpex_share
-    - swissimpex_rank
+    # WTO — merchandise values
+    - ITS_MTV_AX
+    - ITS_MTV_AM
+
+# Swiss trade balance assessment — explicit goods vs services framing
+ch_trade_balance_assessment:
+  description: >
+    Assessment of Switzerland's bilateral trade balance narrative with a partner country,
+    explicitly separating goods from services, using WTO indicators only.
+    Used for: "What is the trade statistics with the US in goods and in services?",
+              "Give me arguments that we should not judge the US relationship on goods only."
+  indicators:
+    # WTO — services (balanced values)
+    - BAT_BV_X
+    - BAT_BV_M
     # WTO — merchandise values
     - ITS_MTV_AX
     - ITS_MTV_AM
