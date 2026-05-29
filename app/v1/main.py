@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+from pathlib import Path
 
 from fastapi import FastAPI, HTTPException
 from fastapi.responses import StreamingResponse
@@ -10,6 +11,12 @@ from langchain_core.messages import AIMessage, HumanMessage
 from pydantic import BaseModel
 
 from app.v1.agents import agent_factory
+from app.v1.agents.report_agent import build_report_draft
+from app.v1.schemas.evidence import EvidencePack
+from app.v1.schemas.planning import AnalysisPlan
+from app.v1.schemas.report import HtmlReport
+from app.v1.services.report_builder import build_chart_specs, build_filename, build_metrics
+from app.v1.services.report_renderer import render_html_report
 
 app = FastAPI(
     title="EDAta Agent",
@@ -32,6 +39,13 @@ class ChatRequest(BaseModel):
 
 class ChatResponse(BaseModel):
     response: str
+
+
+class ReportRequest(BaseModel):
+    message: str
+    answer: str
+    plan: dict
+    evidence: dict
 
 
 # ── Helpers ────────────────────────────────────────────────────────────────────
@@ -90,3 +104,26 @@ def chat_stream(request: ChatRequest) -> StreamingResponse:
             yield f"data: {json.dumps(event)}\n\n"
 
     return StreamingResponse(_event_stream(), media_type="text/event-stream")
+
+
+@app.post("/report/html", response_model=HtmlReport)
+def generate_html_report(request: ReportRequest) -> HtmlReport:
+    """Generate an HTML report from an existing analysis answer and evidence pack."""
+    try:
+        plan = AnalysisPlan.model_validate(request.plan)
+        evidence = EvidencePack.model_validate(request.evidence)
+        draft = build_report_draft(request.message, request.answer, plan, evidence)
+        if not draft.metrics:
+            draft.metrics = build_metrics(evidence)
+        charts = build_chart_specs(evidence)
+        filename = build_filename(plan)
+        html = render_html_report(
+            draft=draft,
+            charts=charts,
+            plan=plan,
+            user_question=request.message,
+        )
+    except Exception as exc:
+        raise HTTPException(status_code=500, detail=str(exc)) from exc
+
+    return HtmlReport(filename=Path(filename).name, html=html)

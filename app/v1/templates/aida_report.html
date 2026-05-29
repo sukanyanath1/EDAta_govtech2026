@@ -1,0 +1,691 @@
+<!DOCTYPE html>
+<html lang="de">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>__TITLE__ — AIDA | EDA</title>
+    <style>
+      :root {
+        --red: #E10019;
+        --text: #171717;
+        --text-secondary: #5E5E5E;
+        --bg: #FFFFFF;
+        --bg-light: #F7F7F7;
+        --bg-footer: #2B2B2B;
+        --border: #E0E0E0;
+        --radius: 20px;
+        --radius-sm: 12px;
+      }
+
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+        font-size: 16px;
+        line-height: 1.65;
+        color: var(--text);
+        background: var(--bg-light);
+      }
+
+      /* ── Service Navigation (top bar like eda.admin.ch) ──────── */
+      .service-nav {
+        background: var(--bg);
+        border-bottom: 1px solid var(--border);
+        font-size: 13px;
+        color: var(--text-secondary);
+      }
+
+      .service-nav-inner {
+        max-width: 1280px;
+        margin: 0 auto;
+        padding: 8px 32px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+
+      .service-nav a {
+        color: var(--text-secondary);
+        text-decoration: none;
+      }
+
+      .service-nav a:hover {
+        text-decoration: underline;
+      }
+
+      /* ── Header / Logo ──────────────────────────────────────── */
+      .header {
+        background: var(--bg);
+        padding: 20px 32px;
+      }
+
+      .header-inner {
+        max-width: 1280px;
+        margin: 0 auto;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+
+      .logo {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+      }
+
+      .logo-flag {
+        height: 40px;
+        width: auto;
+      }
+
+      .logo-name {
+        height: 32px;
+        width: auto;
+      }
+
+      .logo-separator {
+        width: 1px;
+        height: 36px;
+        background: var(--border);
+        margin: 0 6px;
+      }
+
+      .header-app-name {
+        font-size: 14px;
+        font-weight: 600;
+        color: var(--text);
+        letter-spacing: 0.01em;
+      }
+
+      /* ── Page wrapper ───────────────────────────────────────── */
+      .page {
+        max-width: 1280px;
+        margin: 0 auto;
+        padding: 32px 32px 64px;
+      }
+
+      /* ── Title / Hero area ──────────────────────────────────── */
+      .title-area {
+        background: var(--bg);
+        border-radius: var(--radius);
+        padding: 40px 40px 36px;
+        margin-bottom: 24px;
+      }
+
+      .title-area h1 {
+        font-size: 2rem;
+        font-weight: 700;
+        line-height: 1.2;
+        color: var(--text);
+        margin-bottom: 8px;
+      }
+
+      .title-area .subtitle {
+        font-size: 1.05rem;
+        color: var(--text-secondary);
+        max-width: 700px;
+        margin-bottom: 24px;
+      }
+
+      .meta-pills {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+
+      .meta-pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        background: var(--bg-light);
+        border: 1px solid var(--border);
+        border-radius: 999px;
+        padding: 6px 14px;
+        font-size: 0.8125rem;
+        color: var(--text-secondary);
+      }
+
+      .meta-pill strong {
+        color: var(--text);
+        font-weight: 600;
+      }
+
+      /* ── Content grid ───────────────────────────────────────── */
+      .content-grid {
+        display: grid;
+        grid-template-columns: 1fr 400px;
+        gap: 24px;
+        align-items: start;
+      }
+
+      /* ── Cards (main panels) ────────────────────────────────── */
+      .card {
+        background: var(--bg);
+        border-radius: var(--radius);
+        padding: 32px 36px;
+        margin-bottom: 24px;
+      }
+
+      .card:last-child {
+        margin-bottom: 0;
+      }
+
+      .card h2 {
+        font-size: 1.25rem;
+        font-weight: 700;
+        color: var(--text);
+        margin-bottom: 14px;
+      }
+
+      .card p {
+        margin-bottom: 10px;
+        color: var(--text);
+      }
+
+      .summary-points,
+      .caveats {
+        padding-left: 20px;
+        margin: 0;
+      }
+
+      .summary-points li,
+      .caveats li {
+        margin-bottom: 8px;
+        color: var(--text);
+      }
+
+      /* ── Metrics grid ───────────────────────────────────────── */
+      .metrics {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 14px;
+      }
+
+      .metric-card {
+        background: var(--bg-light);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-sm);
+        padding: 18px 20px;
+      }
+
+      .metric-card h3 {
+        font-size: 0.75rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        color: var(--text-secondary);
+        margin-bottom: 8px;
+      }
+
+      .metric-card strong {
+        display: block;
+        font-size: 1.35rem;
+        font-weight: 700;
+        color: var(--text);
+        margin-bottom: 4px;
+      }
+
+      .metric-card p {
+        font-size: 0.8125rem;
+        color: var(--text-secondary);
+        margin: 0;
+      }
+
+      /* ── Report sections (dynamic) ─────────────────────────── */
+      .report-section {
+        background: var(--bg);
+        border-radius: var(--radius);
+        padding: 32px 36px;
+        margin-bottom: 24px;
+      }
+
+      .report-section h2 {
+        font-size: 1.25rem;
+        font-weight: 700;
+        color: var(--text);
+        margin-bottom: 14px;
+      }
+
+      .report-section p {
+        margin-bottom: 10px;
+        color: var(--text);
+      }
+
+      /* ── Sidebar ────────────────────────────────────────────── */
+      .sidebar {
+        position: sticky;
+        top: 24px;
+        display: flex;
+        flex-direction: column;
+        gap: 24px;
+      }
+
+      .sidebar-card {
+        background: var(--bg);
+        border-radius: var(--radius);
+        padding: 28px 28px;
+      }
+
+      .sidebar-card h3 {
+        font-size: 0.8125rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        color: var(--text-secondary);
+        margin-bottom: 16px;
+        padding-bottom: 10px;
+        border-bottom: 1px solid var(--border);
+      }
+
+      /* ── Charts ─────────────────────────────────────────────── */
+      .chart-shell {
+        margin-bottom: 24px;
+      }
+
+      .chart-shell:last-child {
+        margin-bottom: 0;
+      }
+
+      .chart-shell h4 {
+        font-size: 0.875rem;
+        font-weight: 600;
+        color: var(--text);
+        margin-bottom: 4px;
+      }
+
+      .chart-meta {
+        font-size: 0.75rem;
+        color: var(--text-secondary);
+        margin-bottom: 12px;
+        line-height: 1.4;
+      }
+
+      svg {
+        width: 100%;
+        height: 200px;
+        overflow: visible;
+      }
+
+      /* ── Footer ─────────────────────────────────────────────── */
+      .footer {
+        background: var(--bg-footer);
+        color: #CCCCCC;
+        margin-top: 48px;
+        border-radius: var(--radius) var(--radius) 0 0;
+      }
+
+      .footer-inner {
+        max-width: 1280px;
+        margin: 0 auto;
+        padding: 40px 32px;
+        display: grid;
+        grid-template-columns: 1fr auto;
+        gap: 32px;
+        align-items: start;
+      }
+
+      .footer-info h4 {
+        color: #FFFFFF;
+        font-size: 0.9375rem;
+        font-weight: 700;
+        margin-bottom: 8px;
+      }
+
+      .footer-info p {
+        font-size: 0.8125rem;
+        line-height: 1.5;
+        color: #AAAAAA;
+        max-width: 480px;
+      }
+
+      .footer-brand {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+
+      .footer-brand img {
+        height: 28px;
+      }
+
+      .footer-brand .logo-name-inverted {
+        filter: brightness(0) invert(1);
+      }
+
+      .footer-bottom {
+        max-width: 1280px;
+        margin: 0 auto;
+        padding: 16px 32px;
+        border-top: 1px solid #444444;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        font-size: 0.75rem;
+        color: #999999;
+      }
+
+      .footer-links {
+        display: flex;
+        gap: 20px;
+      }
+
+      .footer-links a {
+        color: #999999;
+        text-decoration: none;
+      }
+
+      .footer-links a:hover {
+        color: #FFFFFF;
+      }
+
+      /* ── Responsive ─────────────────────────────────────────── */
+      @media (max-width: 960px) {
+        .content-grid {
+          grid-template-columns: 1fr;
+        }
+        .sidebar {
+          position: static;
+        }
+        .metrics {
+          grid-template-columns: 1fr;
+        }
+        .title-area,
+        .card,
+        .report-section,
+        .sidebar-card {
+          padding: 24px 20px;
+        }
+        .page {
+          padding: 20px 16px 48px;
+        }
+      }
+
+      @media print {
+        body { background: white; }
+        .service-nav { display: none; }
+        .footer { break-inside: avoid; }
+        .sidebar { position: static; }
+        .content-grid { grid-template-columns: 1fr; }
+        .card, .report-section, .sidebar-card, .title-area { box-shadow: none; border: 1px solid #ddd; }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Service navigation (like eda.admin.ch top bar) -->
+    <nav class="service-nav">
+      <div class="service-nav-inner">
+        <span>Eidgen&ouml;ssisches Departement f&uuml;r ausw&auml;rtige Angelegenheiten EDA</span>
+      </div>
+    </nav>
+
+    <!-- Header with Swiss federal logo -->
+    <header class="header">
+      <div class="header-inner">
+        <div class="logo">
+          <img class="logo-flag" src="https://www.eda.admin.ch/images/swiss-logo-flag.svg" alt="Schweizerische Eidgenossenschaft" />
+          <img class="logo-name" src="https://www.eda.admin.ch/images/swiss-logo-name.svg" alt="Schweizerische Eidgenossenschaft" />
+          <div class="logo-separator"></div>
+          <span class="header-app-name">AIDA &ndash; AI Diplomatic Assistant</span>
+        </div>
+      </div>
+    </header>
+
+    <main class="page">
+      <!-- Title area -->
+      <section class="title-area">
+        <h1>__TITLE__</h1>
+        <p class="subtitle">__SUBTITLE__</p>
+        <div class="meta-pills">
+          <span class="meta-pill"><strong>Task</strong> __TASK_TYPE__</span>
+          <span class="meta-pill"><strong>Countries</strong> __COUNTRIES__</span>
+          <span class="meta-pill"><strong>Question</strong> __QUESTION__</span>
+        </div>
+      </section>
+
+      <!-- Two-column layout -->
+      <div class="content-grid">
+        <!-- Main column -->
+        <div class="main-col">
+          <section class="card">
+            <h2>Executive Summary</h2>
+            __EXECUTIVE_SUMMARY__
+          </section>
+
+          <section class="card">
+            <h2>Key Points</h2>
+            <ul class="summary-points">__SUMMARY_POINTS__</ul>
+          </section>
+
+          <section class="card">
+            <h2>Headline Metrics</h2>
+            <div class="metrics">__METRICS__</div>
+          </section>
+
+          __SECTIONS__
+        </div>
+
+        <!-- Sidebar -->
+        <aside class="sidebar">
+          <div class="sidebar-card">
+            <h3>Evidence Visuals</h3>
+            <div id="charts"></div>
+          </div>
+
+          <div class="sidebar-card">
+            <h3>Data Caveats</h3>
+            <ul class="caveats">__CAVEATS__</ul>
+          </div>
+        </aside>
+      </div>
+    </main>
+
+    <!-- Footer (EDA style) -->
+    <footer class="footer">
+      <div class="footer-inner">
+        <div class="footer-info">
+          <h4>AIDA &mdash; AI Diplomatic Assistant</h4>
+          <p>Generated for the Swiss Federal Department of Foreign Affairs (EDA). This report is derived from the current analytical answer and the structured evidence pack provided by AIDA.</p>
+        </div>
+        <div class="footer-brand">
+          <img src="https://www.eda.admin.ch/images/swiss-logo-flag.svg" alt="Swiss Confederation" />
+          <img class="logo-name-inverted" src="https://www.eda.admin.ch/images/swiss-logo-name.svg" alt="Schweizerische Eidgenossenschaft" />
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span>&copy; EDA</span>
+        <div class="footer-links">
+          <a href="https://www.eda.admin.ch/de/rechtliches" target="_blank" rel="noopener">Rechtliches</a>
+          <a href="https://www.eda.admin.ch/de/impressum-herausgeber-redaktion" target="_blank" rel="noopener">Impressum</a>
+        </div>
+      </div>
+    </footer>
+
+    <script>
+      const chartSpecs = __CHART_SPECS__;
+
+      function formatNumber(value) {
+        if (value === null || value === undefined) return 'n/a';
+        const abs = Math.abs(value);
+        const digits = abs >= 100 ? 1 : 2;
+        return new Intl.NumberFormat('de-CH', { maximumFractionDigits: digits }).format(value);
+      }
+
+      function createSvg(width, height) {
+        const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+        svg.setAttribute('viewBox', '0 0 ' + width + ' ' + height);
+        return svg;
+      }
+
+      function appendText(svg, x, y, text, options) {
+        options = options || {};
+        const node = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+        node.setAttribute('x', x);
+        node.setAttribute('y', y);
+        node.setAttribute('fill', options.fill || '#5E5E5E');
+        node.setAttribute('font-size', options.fontSize || '11');
+        node.setAttribute('font-family', '-apple-system, BlinkMacSystemFont, Segoe UI, Roboto, sans-serif');
+        node.setAttribute('text-anchor', options.anchor || 'start');
+        node.textContent = text;
+        svg.appendChild(node);
+      }
+
+      function renderLineChart(spec) {
+        var width = 400, height = 200;
+        var margin = { top: 16, right: 16, bottom: 40, left: 48 };
+        var svg = createSvg(width, height);
+        var values = spec.series[0].values.filter(function(v) { return v !== null; });
+        if (!values.length) return svg;
+
+        var min = Math.min.apply(null, values);
+        var max = Math.max.apply(null, values);
+        var usableW = width - margin.left - margin.right;
+        var usableH = height - margin.top - margin.bottom;
+        var yScale = function(v) { return margin.top + usableH - ((v - min) / ((max - min) || 1)) * usableH; };
+        var xScale = function(i) { return margin.left + (usableW / Math.max(spec.categories.length - 1, 1)) * i; };
+
+        // Grid lines
+        for (var g = 0; g <= 4; g++) {
+          var yy = margin.top + (usableH / 4) * g;
+          var gridLine = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+          gridLine.setAttribute('x1', margin.left);
+          gridLine.setAttribute('x2', margin.left + usableW);
+          gridLine.setAttribute('y1', yy);
+          gridLine.setAttribute('y2', yy);
+          gridLine.setAttribute('stroke', '#E0E0E0');
+          gridLine.setAttribute('stroke-width', '0.5');
+          svg.appendChild(gridLine);
+        }
+
+        // Area fill
+        var areaPath = '';
+        var linePath = '';
+        var firstX = null, lastX = null;
+        spec.series[0].values.forEach(function(v, i) {
+          if (v === null) return;
+          var px = xScale(i);
+          var py = yScale(v);
+          linePath += (linePath ? ' L' : 'M') + ' ' + px + ' ' + py;
+          areaPath += (areaPath ? ' L' : 'M') + ' ' + px + ' ' + py;
+          if (firstX === null) firstX = px;
+          lastX = px;
+        });
+        areaPath += ' L ' + lastX + ' ' + (margin.top + usableH) + ' L ' + firstX + ' ' + (margin.top + usableH) + ' Z';
+
+        var area = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+        area.setAttribute('d', areaPath);
+        area.setAttribute('fill', 'rgba(225, 0, 25, 0.06)');
+        svg.appendChild(area);
+
+        var line = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+        line.setAttribute('d', linePath);
+        line.setAttribute('stroke', '#E10019');
+        line.setAttribute('stroke-width', '2.5');
+        line.setAttribute('fill', 'none');
+        line.setAttribute('stroke-linejoin', 'round');
+        line.setAttribute('stroke-linecap', 'round');
+        svg.appendChild(line);
+
+        spec.series[0].values.forEach(function(v, i) {
+          if (v === null) return;
+          var circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+          circle.setAttribute('cx', xScale(i));
+          circle.setAttribute('cy', yScale(v));
+          circle.setAttribute('r', '3.5');
+          circle.setAttribute('fill', '#E10019');
+          circle.setAttribute('stroke', '#FFFFFF');
+          circle.setAttribute('stroke-width', '1.5');
+          svg.appendChild(circle);
+        });
+
+        // X-axis labels
+        var step = Math.max(1, Math.ceil(spec.categories.length / 7));
+        spec.categories.forEach(function(label, i) {
+          if (i % step === 0 || i === spec.categories.length - 1) {
+            appendText(svg, xScale(i), height - 12, label, { anchor: 'middle', fontSize: '10' });
+          }
+        });
+        appendText(svg, margin.left - 6, margin.top + 4, formatNumber(max), { anchor: 'end', fontSize: '10' });
+        appendText(svg, margin.left - 6, margin.top + usableH + 4, formatNumber(min), { anchor: 'end', fontSize: '10' });
+        return svg;
+      }
+
+      function renderBarChart(spec) {
+        var width = 400, height = 200;
+        var margin = { top: 16, right: 16, bottom: 44, left: 48 };
+        var svg = createSvg(width, height);
+        var values = spec.series[0].values.filter(function(v) { return v !== null; });
+        if (!values.length) return svg;
+        var max = Math.max.apply(null, values);
+        var usableW = width - margin.left - margin.right;
+        var usableH = height - margin.top - margin.bottom;
+        var gap = 10;
+        var barW = (usableW - gap * (spec.categories.length - 1)) / Math.max(spec.categories.length, 1);
+
+        // Grid lines
+        for (var g = 0; g <= 4; g++) {
+          var yy = margin.top + (usableH / 4) * g;
+          var gridLine = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+          gridLine.setAttribute('x1', margin.left);
+          gridLine.setAttribute('x2', margin.left + usableW);
+          gridLine.setAttribute('y1', yy);
+          gridLine.setAttribute('y2', yy);
+          gridLine.setAttribute('stroke', '#E0E0E0');
+          gridLine.setAttribute('stroke-width', '0.5');
+          svg.appendChild(gridLine);
+        }
+
+        spec.series[0].values.forEach(function(v, i) {
+          if (v === null) return;
+          var h = (v / (max || 1)) * usableH;
+          var x = margin.left + i * (barW + gap);
+          var y = margin.top + usableH - h;
+
+          var rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+          rect.setAttribute('x', x);
+          rect.setAttribute('y', y);
+          rect.setAttribute('width', barW);
+          rect.setAttribute('height', h);
+          rect.setAttribute('rx', '6');
+          rect.setAttribute('fill', i % 2 === 0 ? '#171717' : '#E10019');
+          svg.appendChild(rect);
+
+          appendText(svg, x + barW / 2, height - 12, spec.categories[i] || '', { anchor: 'middle', fontSize: '10' });
+          appendText(svg, x + barW / 2, y - 6, formatNumber(v), { anchor: 'middle', fontSize: '10' });
+        });
+        return svg;
+      }
+
+      function renderCharts() {
+        var mount = document.getElementById('charts');
+        if (!chartSpecs.length) {
+          mount.innerHTML = '<p class="chart-meta">No suitable chart could be derived from the current evidence pack.</p>';
+          return;
+        }
+
+        chartSpecs.forEach(function(spec) {
+          var card = document.createElement('div');
+          card.className = 'chart-shell';
+
+          var heading = document.createElement('h4');
+          heading.textContent = spec.title;
+          card.appendChild(heading);
+
+          var meta = document.createElement('p');
+          meta.className = 'chart-meta';
+          meta.textContent = spec.note + (spec.unit ? ' — ' + spec.unit : '');
+          card.appendChild(meta);
+
+          var svg = spec.chart_type === 'bar' ? renderBarChart(spec) : renderLineChart(spec);
+          card.appendChild(svg);
+          mount.appendChild(card);
+        });
+      }
+
+      renderCharts();
+    </script>
+  </body>
+</html>
