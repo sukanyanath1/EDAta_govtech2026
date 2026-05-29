@@ -4,8 +4,8 @@ Source routing:
   IMF        → imf_client
   World Bank → worldbank_client
   SNB        → snb_client  (bilateral Switzerland ↔ partner)
-  BAZG       → swissimpex_client  (bilateral Switzerland ↔ partner goods trade)
-
+  WTO        → wto_client  (bilateral Switzerland ↔ partner)
+  
 All indicators are fetched concurrently (ThreadPoolExecutor) to avoid serial
 HTTP round-trips when a bundle has many indicators.
 """
@@ -19,7 +19,7 @@ from app.v1.services import (
     imf_client,
     indicator_catalog_service,
     snb_client,
-    swissimpex_client,
+    wto_client,
     worldbank_client,
 )
 
@@ -50,9 +50,8 @@ def _fetch_rows(
             return snb_client.get_fdi_abroad(countries, dimension, years)
         return [{"country_code": c, "indicator_code": indicator, "error": f"Unknown SNB cube: {cube}"} for c in countries]
 
-    if source == "BAZG":
-        dimension = indicator.removeprefix("swissimpex_")
-        return swissimpex_client.get_goods_trade(countries, dimension, years)
+    if source == "WTO":
+        return wto_client.get_indicator_for_countries(indicator, countries, years)
 
     # Unknown source — fall back to IMF
     return imf_client.get_indicator_for_countries(indicator, countries, years)

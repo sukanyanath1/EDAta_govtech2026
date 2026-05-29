@@ -1,12 +1,12 @@
 # Switzerland-centric analytical bundles.
-# All Swiss bilateral indicators (SNB, BAZG) reflect CH ↔ partner country data.
+# All Swiss bilateral indicators (SNB) reflect CH ↔ partner country data.
 # Bundles are selected automatically by the planner agent based on the user question.
 
 # Full bilateral overview — Switzerland's complete relationship with a country
 ch_bilateral_overview:
   description: >
     Comprehensive view of Switzerland's economic relationship with a partner country.
-    Combines the partner's economic profile (IMF) with Swiss bilateral trade (SNB/BAZG).
+    Combines the partner's economic profile (IMF) with Swiss bilateral trade (SNB).
     Used for: "Give me a full overview of our relationship with Vietnam",
               "Prepare a country briefing for Egypt."
   indicators:
@@ -22,13 +22,12 @@ ch_bilateral_overview:
     # SNB — Swiss bilateral services trade
     - bopserva_total
     - bopserva_share
+    # WTO — additional services trade series (USD)
+    - BAT_BV_X
+    - BAT_BV_M
     # SNB — Swiss bilateral FDI
     - fdiausbla_stock
     - fdiausbla_share
-    # BAZG — Swiss bilateral goods trade
-    - swissimpex_total
-    - swissimpex_share
-    - swissimpex_rank
 
 # Partner economic profile — macroeconomic health of the partner country only
 partner_economic_profile:
@@ -47,11 +46,10 @@ partner_economic_profile:
     - BCA_NGDPD
     - NY.GNP.PCAP.CD
 
-# Swiss trade partner assessment — goods and services trade focus
+# Swiss trade partner assessment — services trade focus
 ch_trade_partner_assessment:
   description: >
     Assessment of a country as a trade partner for Switzerland.
-    Combines partner economic fundamentals with Swiss bilateral trade data.
     Used for: "How important is India as a trade partner for Switzerland?",
               "Should we expand trade with Vietnam?"
   indicators:
@@ -65,12 +63,21 @@ ch_trade_partner_assessment:
     - bopserva_debits
     - bopserva_total
     - bopserva_share
-    # BAZG — Swiss bilateral goods
-    - swissimpex_exports
-    - swissimpex_imports
-    - swissimpex_total
-    - swissimpex_share
-    - swissimpex_rank
+    # WTO — services (balanced values)
+    - BAT_BV_X
+    - BAT_BV_M
+
+# Swiss trade balance assessment — services trade framing
+ch_trade_balance_assessment:
+  description: >
+    Assessment of Switzerland's bilateral trade balance narrative with a partner country,
+    using WTO services indicators only.
+    Used for: "What are Switzerland's services trade statistics with the US?",
+              "Give me arguments based on services trade dynamics."
+  indicators:
+    # WTO — services (balanced values)
+    - BAT_BV_X
+    - BAT_BV_M
 
 # Swiss investment partner assessment — FDI and economic attractiveness focus
 ch_investment_partner_assessment:
