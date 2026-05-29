@@ -15,13 +15,13 @@ from config import settings
 BACKEND_URL = settings.backend_url
 
 st.set_page_config(
-    page_title="EDAta Agent",
+    page_title="AIDA — AI Diplomatic Assistant",
     page_icon="🌍",
     layout="wide",
 )
 
-st.title("🌍 EDAta — Economic Intelligence Agent")
-st.caption("Ask a diplomatic or economic question. The agent retrieves live IMF data and writes a briefing.")
+st.title("AIDA — AI Diplomatic Assistant")
+st.caption("Ask a diplomatic or economic question. The agent retrieves live data and writes a briefing.")
 
 # ── Session state ──────────────────────────────────────────────────────────────
 

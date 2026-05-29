@@ -42,6 +42,7 @@ FRONTEND_APP="${FRONTEND_APP:-edatademo-frontend}"
 : "${STORAGE_ACCOUNT_URL:?Set STORAGE_ACCOUNT_URL before running}"
 : "${ADLS_FILESYSTEM:?Set ADLS_FILESYSTEM before running}"
 ADLS_SAS_TOKEN="${ADLS_SAS_TOKEN:-}"
+WTO_SUBSCRIPTION_KEY="${WTO_SUBSCRIPTION_KEY:-}"
 
 # ── Image naming (read from pyproject.toml) ───────────────────────────────────
 PYPROJECT="$(dirname "$0")/../pyproject.toml"
@@ -156,6 +157,10 @@ BACKEND_ENV_VARS=(
 if [ -n "$ADLS_SAS_TOKEN" ]; then
   BACKEND_SECRETS+=("adls-sas-token=$ADLS_SAS_TOKEN")
   BACKEND_ENV_VARS+=("ADLS_SAS_TOKEN=secretref:adls-sas-token")
+fi
+if [ -n "$WTO_SUBSCRIPTION_KEY" ]; then
+  BACKEND_SECRETS+=("wto-subscription-key=$WTO_SUBSCRIPTION_KEY")
+  BACKEND_ENV_VARS+=("WTO_SUBSCRIPTION_KEY=secretref:wto-subscription-key")
 fi
 
 _upsert_containerapp "$BACKEND_APP" \
