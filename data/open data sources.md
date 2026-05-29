@@ -17,7 +17,6 @@
 - https://www.transparency.org/en/cpi/2022
 - https://www.wipo.int/edocs/pubdocs/en/wipo-pub-2000-2023-en-main-report-global-innovation-index-2023-16th-edition.pdf
 - https://www.imd.org/centers/wcc/world-competitiveness-center/rankings/world-competitiveness-ranking/
-- https://www.gate.ezv.admin.ch/swissimpex/
 - https://app.powerbi.com/view?r=eyJrIjoiMTE0MmMxMWQtMjU2NS00Yzg5LWIyOWEtNDFlOGJmNjg3YTJmIiwidCI6IjZjNGI0ZWU0LWMxNmYtNGQyZC05NGQ4LTU5ZTE3ODUyYTkzZiJ9
 - https://data.snb.ch/de/topics/aube/cube/fdiausbla
 - https://www.bfs.admin.ch/bfs/de/home/statistiken/bevoelkerung/migration-integration/auslandschweizer.assetdetail.24310288.html

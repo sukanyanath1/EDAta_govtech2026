@@ -1,6 +1,6 @@
 # Master indicator catalog — all sources
 # source field drives routing in evidence_builder.py
-# Swiss bilateral indicators (SNB, BAZG) always reflect CH ↔ partner country
+# Swiss bilateral indicators (SNB) reflect CH ↔ partner country
 
 # ══════════════════════════════════════════════════════════════════════════════
 # LEVEL 1 — Economic Stability (IMF / World Bank / WIPO)
@@ -151,34 +151,6 @@
   default_tasks:
     - ch_trade_partner_assessment
     - ch_bilateral_overview
-  interpretation_hint: Revenue Switzerland earns from exporting services to the partner country.
-
-- id: ch_services_expenditures
-  name: Swiss services trade expenditures to partner (debits)
-  code: bopserva_debits
-  source: SNB
-  snb_cube: bopserva
-  snb_dimension: debits
-  unit: Millions of CHF
-  level: "Level 2 - Services Trade"
-  category: ch_services_trade
-  default_tasks:
-    - ch_trade_partner_assessment
-    - ch_bilateral_overview
-  interpretation_hint: Amount Switzerland spends on services imported from the partner country.
-
-- id: ch_services_trade_total
-  name: Total bilateral services trade (Switzerland)
-  code: bopserva_total
-  source: SNB
-  snb_cube: bopserva
-  snb_dimension: total
-  unit: Millions of CHF
-  level: "Level 2 - Services Trade"
-  category: ch_services_trade
-  default_tasks:
-    - ch_trade_partner_assessment
-    - ch_bilateral_overview
   interpretation_hint: Overall services trade activity between Switzerland and the partner country.
 
 - id: ch_services_trade_share
@@ -194,6 +166,30 @@
     - ch_trade_partner_assessment
     - ch_bilateral_overview
   interpretation_hint: Strategic relevance to Switzerland — higher share means greater bilateral importance.
+
+- id: wto_services_exports_usd
+  name: WTO BaTiS services exports (balanced values)
+  code: BAT_BV_X
+  source: WTO
+  unit: Million US dollar
+  level: "Level 2 - Services Trade"
+  category: ch_services_trade
+  default_tasks:
+    - ch_trade_partner_assessment
+    - ch_bilateral_overview
+  interpretation_hint: Switzerland's services exports to the partner in WTO BaTiS balanced series.
+
+- id: wto_services_imports_usd
+  name: WTO BaTiS services imports (balanced values)
+  code: BAT_BV_M
+  source: WTO
+  unit: Million US dollar
+  level: "Level 2 - Services Trade"
+  category: ch_services_trade
+  default_tasks:
+    - ch_trade_partner_assessment
+    - ch_bilateral_overview
+  interpretation_hint: Switzerland's services imports from the partner in WTO BaTiS balanced series.
 
 # ══════════════════════════════════════════════════════════════════════════════
 # LEVEL 3 — Direct Investments (SNB — Switzerland bilateral)
@@ -226,67 +222,3 @@
     - ch_investment_partner_assessment
     - ch_bilateral_overview
   interpretation_hint: Relative strategic importance as a destination for Swiss capital.
-
-# ══════════════════════════════════════════════════════════════════════════════
-# LEVEL 4 — Goods Trade (BAZG / SwissImpex — Switzerland bilateral)
-# ══════════════════════════════════════════════════════════════════════════════
-
-- id: ch_exports_chf
-  name: Swiss exports to partner country
-  code: swissimpex_exports
-  source: BAZG
-  unit: Millions of CHF
-  level: "Level 4 - Goods Trade"
-  category: ch_goods_trade
-  default_tasks:
-    - ch_trade_partner_assessment
-    - ch_bilateral_overview
-  interpretation_hint: Importance of the partner as an export market for Swiss goods.
-
-- id: ch_imports_chf
-  name: Swiss imports from partner country
-  code: swissimpex_imports
-  source: BAZG
-  unit: Millions of CHF
-  level: "Level 4 - Goods Trade"
-  category: ch_goods_trade
-  default_tasks:
-    - ch_trade_partner_assessment
-    - ch_bilateral_overview
-  interpretation_hint: Import dependency on the partner country for goods.
-
-- id: ch_goods_trade_total
-  name: Total bilateral goods trade (Switzerland)
-  code: swissimpex_total
-  source: BAZG
-  unit: Millions of CHF
-  level: "Level 4 - Goods Trade"
-  category: ch_goods_trade
-  default_tasks:
-    - ch_trade_partner_assessment
-    - ch_bilateral_overview
-  interpretation_hint: Overall goods trade volume between Switzerland and the partner country.
-
-- id: ch_goods_trade_share
-  name: Partner country share of Swiss total goods trade
-  code: swissimpex_share
-  source: BAZG
-  unit: Percent
-  level: "Level 4 - Goods Trade"
-  category: ch_goods_trade
-  default_tasks:
-    - ch_trade_partner_assessment
-    - ch_bilateral_overview
-  interpretation_hint: Strategic relevance of the partner to Swiss goods trade.
-
-- id: ch_trade_partner_rank
-  name: Partner country rank as Swiss trade partner
-  code: swissimpex_rank
-  source: BAZG
-  unit: Rank
-  level: "Level 4 - Goods Trade"
-  category: ch_goods_trade
-  default_tasks:
-    - ch_trade_partner_assessment
-    - ch_bilateral_overview
-  interpretation_hint: Relative importance as a goods trade partner; rank 1 = largest partner.
