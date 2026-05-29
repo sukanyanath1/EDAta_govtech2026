@@ -27,5 +27,8 @@ class Settings(BaseSettings):
     adls_account_key: str | None = None
     adls_connection_string: str | None = None
 
+    # ── WTO Timeseries API ────────────────────────────────────────────────────
+    wto_subscription_key: SecretStr | None = None
+
 
 settings = Settings()

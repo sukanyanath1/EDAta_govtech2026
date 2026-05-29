@@ -22,6 +22,9 @@ ch_bilateral_overview:
     # SNB — Swiss bilateral services trade
     - bopserva_total
     - bopserva_share
+    # WTO — additional services and goods trade series (USD)
+    - BAT_BV_X
+    - BAT_BV_M
     # SNB — Swiss bilateral FDI
     - fdiausbla_stock
     - fdiausbla_share
@@ -29,6 +32,9 @@ ch_bilateral_overview:
     - swissimpex_total
     - swissimpex_share
     - swissimpex_rank
+    # WTO — additional annual merchandise trade values (USD)
+    - ITS_MTV_AX
+    - ITS_MTV_AM
 
 # Partner economic profile — macroeconomic health of the partner country only
 partner_economic_profile:
@@ -65,12 +71,18 @@ ch_trade_partner_assessment:
     - bopserva_debits
     - bopserva_total
     - bopserva_share
+    # WTO — services (balanced values)
+    - BAT_BV_X
+    - BAT_BV_M
     # BAZG — Swiss bilateral goods
     - swissimpex_exports
     - swissimpex_imports
     - swissimpex_total
     - swissimpex_share
     - swissimpex_rank
+    # WTO — merchandise values
+    - ITS_MTV_AX
+    - ITS_MTV_AM
 
 # Swiss investment partner assessment — FDI and economic attractiveness focus
 ch_investment_partner_assessment:

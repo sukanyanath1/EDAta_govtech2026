@@ -26,6 +26,7 @@ Available bundles (choose the most appropriate one):
 Bundle selection guide:
 - ch_bilateral_overview    → full picture: "Tell me about Vietnam" / "Overview of India"
 - ch_trade_partner_assessment → trade focus: "How important is India as a trade partner?"
+                               and goods-vs-services balance questions
 - ch_investment_partner_assessment → FDI focus: "Investment climate in Indonesia?"
 - partner_economic_profile → partner macro only: "Is Egypt financially stable?"
 - macro_risk               → risk focus: "Is Argentina vulnerable?"

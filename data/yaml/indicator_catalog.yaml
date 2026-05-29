@@ -195,6 +195,30 @@
     - ch_bilateral_overview
   interpretation_hint: Strategic relevance to Switzerland — higher share means greater bilateral importance.
 
+- id: wto_services_exports_usd
+  name: WTO BaTiS services exports (balanced values)
+  code: BAT_BV_X
+  source: WTO
+  unit: Million US dollar
+  level: "Level 2 - Services Trade"
+  category: ch_services_trade
+  default_tasks:
+    - ch_trade_partner_assessment
+    - ch_bilateral_overview
+  interpretation_hint: Switzerland's services exports to the partner in WTO BaTiS balanced series.
+
+- id: wto_services_imports_usd
+  name: WTO BaTiS services imports (balanced values)
+  code: BAT_BV_M
+  source: WTO
+  unit: Million US dollar
+  level: "Level 2 - Services Trade"
+  category: ch_services_trade
+  default_tasks:
+    - ch_trade_partner_assessment
+    - ch_bilateral_overview
+  interpretation_hint: Switzerland's services imports from the partner in WTO BaTiS balanced series.
+
 # ══════════════════════════════════════════════════════════════════════════════
 # LEVEL 3 — Direct Investments (SNB — Switzerland bilateral)
 # ══════════════════════════════════════════════════════════════════════════════
@@ -290,3 +314,27 @@
     - ch_trade_partner_assessment
     - ch_bilateral_overview
   interpretation_hint: Relative importance as a goods trade partner; rank 1 = largest partner.
+
+- id: wto_goods_exports_usd
+  name: WTO merchandise exports by product group (annual)
+  code: ITS_MTV_AX
+  source: WTO
+  unit: Million US dollar
+  level: "Level 4 - Goods Trade"
+  category: ch_goods_trade
+  default_tasks:
+    - ch_trade_partner_assessment
+    - ch_bilateral_overview
+  interpretation_hint: Switzerland's merchandise exports in WTO annual merchandise trade values.
+
+- id: wto_goods_imports_usd
+  name: WTO merchandise imports by product group (annual)
+  code: ITS_MTV_AM
+  source: WTO
+  unit: Million US dollar
+  level: "Level 4 - Goods Trade"
+  category: ch_goods_trade
+  default_tasks:
+    - ch_trade_partner_assessment
+    - ch_bilateral_overview
+  interpretation_hint: Switzerland's merchandise imports in WTO annual merchandise trade values.

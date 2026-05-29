@@ -1,7 +1,7 @@
 # Gov Tech Hackathon - EDAtaBot
 
 EDAta is a **Switzerland-centric diplomatic economic intelligence agent** for Swiss diplomats.
-It answers questions about partner countries and bilateral relationships by combining live data from the IMF, World Bank, SNB (Swiss National Bank), and BAZG/SwissImpex into a structured evidence pack, then synthesises a concise diplomatic briefing.
+It answers questions about partner countries and bilateral relationships by combining live data from the IMF, World Bank, SNB (Swiss National Bank), BAZG/SwissImpex, and WTO Timeseries into a structured evidence pack, then synthesises a concise diplomatic briefing.
 
 Switzerland is always the reference country. Bilateral data (services trade, FDI, goods trade) always reflects Switzerland's relationship with the partner.
 
@@ -226,7 +226,7 @@ User question
      ↓
 2. Indicator resolver   — maps the bundle to a list of indicator codes
      ↓
-3. Evidence layer       — fetches from IMF / World Bank / SNB / BAZG, builds evidence pack
+3. Evidence layer       — fetches from IMF / World Bank / SNB / BAZG / WTO, builds evidence pack
      ↓
 4. Analysis agent       — reads evidence pack, writes a Switzerland-perspective briefing
 ```
@@ -243,6 +243,7 @@ The LLM never calls any API directly and never sees raw HTTP responses. It only 
 | L2 | SNB — `bopserva` | Switzerland's bilateral services trade (credits, debits, total, share) |
 | L3 | SNB — `fdiausbla` | Switzerland's direct investment abroad (stock, country share) |
 | L4 | BAZG / SwissImpex | Switzerland's bilateral goods trade (exports, imports, total, share, rank) |
+| L2/L4 | WTO Timeseries | Switzerland's services and goods trade indicators (Million US dollar) |
 
 **Project structure:**
 
@@ -259,6 +260,7 @@ app/v1/
     worldbank_client.py           — HTTP client for World Bank REST API v2
     snb_client.py                 — HTTP client for SNB cube API (bopserva, fdiausbla)
     swissimpex_client.py          — BAZG goods trade (reads from ADLS; set SWISSIMPEX_ADLS_PATH)
+    wto_client.py                 — WTO Timeseries API client (set WTO_SUBSCRIPTION_KEY)
     evidence_builder.py           — routes each indicator to its source client, returns EvidencePack
   tools/
     imf_tools.py          — semantic LangChain tools
