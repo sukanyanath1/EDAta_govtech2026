@@ -1,6 +1,6 @@
 # Gov Tech Hackathon - AIDA
 
-IDA is **AI Diplomatic Assistant** for Swiss diplomats.that answers economic and bilateral questions from a Swiss perspective by fetching live data from IMF, World Bank, SNB, and WTO APIs. It runs every question through a four-stage pipeline — planner, bundle resolver, evidence builder, and analysis agent — ensuring the LLM only synthesises answers from verified structured data, never raw API responses. The result is a concise diplomatic briefing with a source-labelled evidence table, covering macro risk, trade, FDI, and bilateral overviews for any country or region worldwide.
+AIDA is **AI Diplomatic Assistant** for Swiss diplomats that answers economic and bilateral questions from a Swiss perspective by fetching live data from IMF, World Bank, SNB, and WTO APIs. It runs every question through a four-stage pipeline — planner, bundle resolver, evidence builder, and analysis agent — ensuring the LLM only synthesises answers from verified structured data, never raw API responses. The result is a concise diplomatic briefing with a source-labelled evidence table, covering macro risk, trade, FDI, and bilateral overviews for any country or region worldwide.
 
 
 ---
